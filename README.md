@@ -8,8 +8,9 @@ system-integrator path.
 **Reference jurisdiction:** Maryland Food Supplement Program (FSP/SNAP), FY2026 federal rules
 (effective Oct 1 2025 – Sep 30 2026).
 
-> **Live demo:** a thin web console (enter a household → determination + benefit + cited rationale
-> + QC flags) is deployed on Vercel. Run it locally with `npm run dev`.
+> **Live demo:** the Maryland example console (enter a household → determination + benefit + cited
+> rationale + QC flags) is at **`/md-snap`** on the deployed Vercel app. Run it locally with
+> `npm run dev` and open `/md-snap`.
 
 ---
 
