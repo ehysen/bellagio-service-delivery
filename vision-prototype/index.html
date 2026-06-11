@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vision Prototype — Served Immediately, With Empathy</title>
+<style>
+  :root{
+    --ink:#1a2433; --ink-soft:#4a5568; --ink-faint:#8a94a6;
+    --bg:#f4f1ec; --card:#ffffff; --line:#e3ddd3;
+    --accent:#2f6f5e; --accent-soft:#e7f1ed; --accent-deep:#1f4f43;
+    --warm:#c4622d; --warm-soft:#faeee5;
+    --sys:#27303f; --sys-card:#323d4f; --sys-ink:#cdd6e4; --sys-accent:#7fd4b9;
+    --radius:18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh;}
+
+  .top{max-width:1180px; margin:0 auto; padding:28px 24px 0;}
+  .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--warm); font-weight:700;}
+  h1{font-size:26px; font-weight:800; margin-top:6px;}
+  .vision{margin-top:8px; max-width:760px; color:var(--ink-soft); font-size:15px; line-height:1.55;}
+  .vision strong{color:var(--ink);}
+
+  .stage{max-width:1180px; margin:22px auto 0; padding:0 24px 40px; display:grid; grid-template-columns:300px 390px 1fr; gap:26px; align-items:start;}
+  @media (max-width:1020px){ .stage{grid-template-columns:1fr;} .narr{order:1} .phonewrap{order:2} .syswrap{order:3} }
+
+  /* Narration column */
+  .narr{position:sticky; top:24px;}
+  .stepnum{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent);}
+  .stepnum .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .narr h2{font-size:22px; font-weight:800; margin:10px 0 10px; line-height:1.25;}
+  .narr p{font-size:14.5px; line-height:1.6; color:var(--ink-soft);}
+  .principle{margin-top:16px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
+  .principle .pl{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--warm); font-weight:700; margin-bottom:5px;}
+  .principle .pt{font-size:13.5px; line-height:1.5; color:var(--ink);}
+
+  .nav{margin-top:22px; display:flex; gap:10px; align-items:center;}
+  button.nbtn{border:none; cursor:pointer; font-weight:700; font-size:14px; padding:11px 20px; border-radius:999px; transition:all .15s;}
+  .next{background:var(--accent); color:#fff;}
+  .next:hover{background:var(--accent-deep);}
+  .back{background:transparent; color:var(--ink-soft); border:1px solid var(--line)!important; border:none;}
+  .back:hover{background:#fff;}
+  .dots{display:flex; gap:6px; margin-top:16px;}
+  .dots span{width:7px;height:7px;border-radius:50%;background:#d4cdc1;cursor:pointer;transition:all .2s;}
+  .dots span.on{background:var(--accent); transform:scale(1.3);}
+  .hint{margin-top:10px; font-size:12px; color:var(--ink-faint);}
+
+  /* Phone */
+  .phonewrap{display:flex; justify-content:center;}
+  .phone{width:375px; max-width:100%; background:#0e1116; border-radius:44px; padding:12px; box-shadow:0 24px 60px rgba(20,25,35,.25);}
+  .screen{background:#fbfaf7; border-radius:34px; overflow:hidden; height:700px; display:flex; flex-direction:column; position:relative;}
+  .statusbar{display:flex; justify-content:space-between; padding:12px 22px 6px; font-size:12px; font-weight:600; color:var(--ink);}
+  .apphead{padding:10px 18px 12px; border-bottom:1px solid #eee7da; background:#fbfaf7;}
+  .apphead .an{font-size:15px; font-weight:800;}
+  .apphead .as{font-size:11.5px; color:var(--ink-faint); margin-top:1px;}
+  .scroll{flex:1; overflow-y:auto; padding:16px 14px 90px; scroll-behavior:smooth;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .bubble{max-width:86%; border-radius:18px; padding:11px 14px; font-size:13.5px; line-height:1.5; margin-bottom:10px; animation:pop .35s ease both;}
+  .gov{background:#fff; border:1px solid #eae3d6; color:var(--ink); border-bottom-left-radius:6px;}
+  .me{background:var(--accent); color:#fff; margin-left:auto; border-bottom-right-radius:6px;}
+  .timechip{font-size:10.5px; color:var(--ink-faint); text-align:center; margin:10px 0 12px; letter-spacing:.04em;}
+  @keyframes pop{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+  .notif{background:#fff; border:1px solid #eae3d6; border-left:4px solid var(--accent); border-radius:14px; padding:12px 14px; margin-bottom:10px; animation:pop .35s ease both;}
+  .notif .nt{font-size:12.5px; font-weight:700;}
+  .notif .nb{font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.45;}
+  .notif .nfrom{font-size:10.5px; color:var(--ink-faint); margin-top:6px; text-transform:uppercase; letter-spacing:.08em;}
+
+  .card{background:#fff; border:1px solid #eae3d6; border-radius:16px; padding:14px; margin-bottom:10px; animation:pop .4s ease both;}
+  .card .ct{font-size:13px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .card .cb{font-size:12.5px; color:var(--ink-soft); margin-top:5px; line-height:1.5;}
+  .badge{display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:999px; margin-top:8px;}
+  .b-green{background:var(--accent-soft); color:var(--accent-deep);}
+  .b-amber{background:#fdf3e0; color:#9a6217;}
+  .b-blue{background:#e8eefb; color:#2b4a8f;}
+
+  .consent{background:#fff; border:1.5px solid var(--accent); border-radius:16px; padding:14px; margin-bottom:10px; animation:pop .4s ease both;}
+  .consent .ct2{font-size:13px; font-weight:800; color:var(--accent-deep);}
+  .consent ul{margin:8px 0 4px 0; list-style:none;}
+  .consent li{font-size:12.5px; color:var(--ink-soft); padding:5px 0; display:flex; gap:8px; line-height:1.4;}
+  .consent li::before{content:"✓"; color:var(--accent); font-weight:800;}
+  .cbtns{display:flex; gap:8px; margin-top:10px;}
+  .cbtn{flex:1; text-align:center; font-size:12.5px; font-weight:700; padding:9px; border-radius:10px;}
+  .cyes{background:var(--accent); color:#fff;}
+  .cno{background:#f1ede6; color:var(--ink-soft);}
+
+  .quick{display:flex; flex-wrap:wrap; gap:7px; margin:4px 0 12px;}
+  .qc{font-size:12px; font-weight:600; color:var(--accent-deep); background:var(--accent-soft); border:1px solid #cfe4db; padding:7px 12px; border-radius:999px;}
+
+  .inputbar{position:absolute; bottom:0; left:0; right:0; padding:12px 14px 18px; background:linear-gradient(transparent, #fbfaf7 30%);}
+  .inputinner{background:#fff; border:1px solid #e5ddcf; border-radius:999px; display:flex; align-items:center; padding:10px 16px; gap:10px; font-size:13px; color:var(--ink-faint);}
+  .inputinner .mic{margin-left:auto; color:var(--accent); font-size:16px;}
+
+  .tl{position:relative; padding-left:20px; margin-bottom:10px;}
+  .tl::before{content:""; position:absolute; left:6px; top:6px; bottom:-4px; width:2px; background:#e3dccd;}
+  .tli{position:relative; padding-bottom:14px; animation:pop .4s ease both;}
+  .tli::before{content:""; position:absolute; left:-20px; top:4px; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid #fbfaf7;}
+  .tli.future::before{background:#d8d1c2;}
+  .tli .tt{font-size:12.5px; font-weight:800;}
+  .tli .tb{font-size:12px; color:var(--ink-soft); line-height:1.45; margin-top:2px;}
+  .tli .tw{font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.07em; margin-top:3px;}
+
+  /* System panel */
+  .syswrap{position:sticky; top:24px;}
+  .sys{background:var(--sys); border-radius:var(--radius); padding:18px 18px 14px; color:var(--sys-ink); box-shadow:0 14px 40px rgba(20,25,35,.18);}
+  .sys h3{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--sys-accent); display:flex; align-items:center; gap:8px;}
+  .sys h3::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--sys-accent); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1} 50%{opacity:.35}}
+  .sys .sub{font-size:12px; color:#94a1b5; margin-top:6px; line-height:1.5;}
+  .sysitems{margin-top:14px; display:flex; flex-direction:column; gap:9px;}
+  .si{background:var(--sys-card); border-radius:12px; padding:11px 13px; display:flex; gap:11px; animation:pop .4s ease both;}
+  .si .ico{font-size:16px; line-height:1.2;}
+  .si .st{font-size:12.5px; font-weight:700; color:#eef2f8;}
+  .si .sb{font-size:12px; color:#9fabbe; line-height:1.5; margin-top:2px;}
+  .si .stat{font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--sys-accent); margin-top:5px;}
+  .sysfoot{margin-top:14px; padding-top:12px; border-top:1px solid #3c4759; font-size:11.5px; color:#8e9bb0; line-height:1.5;}
+  .sysfoot b{color:var(--sys-accent);}
+
+  .colhead{font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint); font-weight:700; margin-bottom:10px; text-align:center;}
+
+  .finale{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px;}
+  .finale h3{font-size:15px; margin-bottom:12px;}
+  .pillgrid{display:grid; gap:10px;}
+  .pill{display:flex; gap:12px; background:var(--bg); border-radius:12px; padding:12px 14px;}
+  .pill .pi{font-size:18px;}
+  .pill .pt2{font-size:13px; font-weight:700;}
+  .pill .pb{font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-top:2px;}
+
+  .ftr{max-width:1180px; margin:0 auto; padding:0 24px 36px; font-size:12px; color:var(--ink-faint); line-height:1.6;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="kicker">Vision prototype · For discussion</div>
+  <h1>Maya's first trimester — and the system that shows up for her</h1>
+  <p class="vision"><strong>People are served immediately and with empathy.</strong> By 2030, clients receive instant and personalized access to the public services they want and need. <strong>Life changes initiate engagement — and the system carries the burden of complexity.</strong> This walkthrough shows what that feels like for one pregnant person, and what the government is doing behind the scenes at every step.</p>
+</div>
+
+<div class="stage">
+  <div class="narr">
+    <div class="stepnum"><span class="dot"></span><span id="stepLabel">Step 1 of 6</span></div>
+    <h2 id="narrTitle"></h2>
+    <p id="narrBody"></p>
+    <div class="principle">
+      <div class="pl" id="prinLabel">Vision principle</div>
+      <div class="pt" id="prinBody"></div>
+    </div>
+    <div class="nav">
+      <button class="nbtn back" id="btnBack">← Back</button>
+      <button class="nbtn next" id="btnNext">Next →</button>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div class="hint">Use ← → arrow keys, or click the dots.</div>
+  </div>
+
+  <div class="phonewrap">
+    <div>
+      <div class="colhead">What Maya experiences</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><span>𝗹𝗹 ⌁ ▮</span></div>
+          <div class="apphead">
+            <div class="an" id="appName">Your State</div>
+            <div class="as" id="appSub">One front door to public services</div>
+          </div>
+          <div class="scroll" id="phoneBody"></div>
+          <div class="inputbar" id="inputBar"><div class="inputinner">Message, voice, or photo… <span class="mic">🎙</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="syswrap">
+    <div class="colhead">What the system carries</div>
+    <div class="sys">
+      <h3>Behind the scenes</h3>
+      <div class="sub">The complexity doesn't disappear — government absorbs it so Maya never feels it.</div>
+      <div class="sysitems" id="sysBody"></div>
+      <div class="sysfoot" id="sysFoot"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ftr">
+  Concept prototype for vision alignment only — not a real product. Programs, timings, and screens are illustrative. Names and data are fictional. Built to make tangible the 2030 moonshot: <em>instantaneous and personalized service delivery, initiated by life events, delivered with empathy.</em>
+</div>
+
+<script>
+const steps = [
+  {
+    label:"Step 1 of 6",
+    title:"A life change initiates engagement — Maya doesn't have to find government",
+    body:"At her first prenatal visit, Maya's clinic asks a single question: \"Want us to let the state know, so support can come to you?\" She says yes. That one consented signal is the entire 'application.' Hours later, government reaches out to her — warmly, in her language, on her terms.",
+    prinLabel:"Life changes initiate engagement",
+    prin:"Today, the burden is on people to discover programs, decode eligibility, and apply one agency at a time. In this vision, a single life-event signal — shared with consent — starts everything.",
+    phone:[
+      {type:'time', text:'Tuesday · 2:14 PM'},
+      {type:'notif', nt:'Congratulations, Maya 💛', nb:'Your clinic let us know (with your okay) that you’re expecting. There’s real support available for you and your baby — and we’ve already done most of the work. Open when you’re ready. No forms, we promise.', nfrom:'Your State · Family & Health'},
+      {type:'notif', nt:'No rush, no deadline pressure', nb:'This support is yours whenever you want it — today, next week, or month seven. We’ll gently check in, never spam you.', nfrom:'Your State'}
+    ],
+    sys:[
+      {ico:'🔔', st:'Life-event signal received', sb:'Clinic submits a standards-based pregnancy life-event trigger via secure API — only because Maya opted in.', stat:'Consent on file'},
+      {ico:'🪪', st:'Identity resolved', sb:'Maya matched to her single resident record. One source of truth — she will never be asked for data the state already holds.', stat:'Matched · 0.4s'},
+      {ico:'🧭', st:'Personalization profile assembled', sb:'Language preference, accessibility needs, household context, preferred channel (text) — pulled, not asked.', stat:'Ready'}
+    ],
+    sysFoot:'<b>What Maya didn’t do:</b> search 14 websites, call 3 hotlines, or fill out a single form.'
+  },
+  {
+    label:"Step 2 of 6",
+    title:"Consent is clear, granular, and human — not 12 pages of legalese",
+    body:"When Maya opens the message, the system asks permission before touching her data — in plain language, showing exactly what it will look at and why. She stays in control: she can say yes to some things and no to others, and withdraw anytime.",
+    prinLabel:"Trust through transparency",
+    prin:"Instant service is only legitimate if people understand and control what's happening. Consent protocols and data governance are the enabling condition for everything that follows.",
+    phone:[
+      {type:'time', text:'Tuesday · 6:30 PM'},
+      {type:'gov', text:'Hi Maya, I’m the state’s family services assistant. First — congratulations. 💛 I can check everything you qualify for in about a minute. To do that, I’d like your permission to look at records the state already has:'},
+      {type:'consent', items:[
+        'Your income record (tax & wage data) — to check benefit eligibility',
+        'Your health coverage status — to find pregnancy coverage',
+        'Your address & household — to find services near you'
+      ]},
+      {type:'gov', text:'You can change your mind anytime, and you’ll always see exactly what I did with your information. Nothing is shared with anyone else without asking you first.'},
+      {type:'me', text:'Okay — yes to all three.'},
+      {type:'gov', text:'Thank you. Give me a moment — and just so you know, you won’t have to upload or re-type anything. We already have what we need. ✨'}
+    ],
+    sys:[
+      {ico:'🔐', st:'Granular consent captured', sb:'Scoped, auditable, revocable. Logged to Maya’s personal data-use ledger — she can see every access, like Estonia’s data tracker.', stat:'3 scopes granted'},
+      {ico:'🗂️', st:'Data pulled from sources of truth', sb:'Wage data from revenue. Coverage status from Medicaid. Address from the resident registry. No duplication, no re-asking.', stat:'4 queries · 1.1s'},
+      {ico:'⚖️', st:'Legal basis verified', sb:'Each data pull runs against codified program rules and data-sharing agreements — machine-readable policy, pre-cleared by counsel.', stat:'Compliant'}
+    ],
+    sysFoot:'<b>The principle:</b> government asks people for information exactly once, ever — and proves how it’s used.'
+  },
+  {
+    label:"Step 3 of 6",
+    title:"Instant, personalized determination — minutes, not months",
+    body:"Sixty seconds later, Maya has answers — not links to applications, but actual enrollments. Eligibility ran across every relevant program at once. Where the law allows, the paradigm flips from validate-first to deliver-now, validate-after: she's covered today, and verification finishes in the background.",
+    prinLabel:"Instant + personalized",
+    prin:"The 'credit card in 60 seconds' standard, applied to public services: determination is instantaneous, the bundle is personal to her life — and delivery doesn't wait for paperwork.",
+    phone:[
+      {type:'time', text:'Tuesday · 6:32 PM'},
+      {type:'gov', text:'Done. Here’s what you qualify for, Maya — all of it is already set up unless you tell me otherwise:'},
+      {type:'card', ct:'🩺 Pregnancy health coverage', cb:'You’re enrolled as of today. Your card is in your digital wallet. Prenatal visits, delivery, and 12 months postpartum — covered.', badge:'Enrolled · active now', bclass:'b-green'},
+      {type:'card', ct:'🥗 WIC nutrition support', cb:'About $62/month for healthy food during pregnancy. Enrolled — your benefit loads to the same card you already use.', badge:'Enrolled · active now', bclass:'b-green'},
+      {type:'card', ct:'💼 Paid family leave', cb:'You qualify for 12 weeks. Nothing to do yet — I’ll have it ready to start the day your baby arrives, and I’ll coordinate with your employer only when you say so.', badge:'Pre-approved · queued', bclass:'b-blue'},
+      {type:'gov', text:'One thing I want to be straight with you about — childcare help works differently. Want me to explain?'},
+      {type:'me', text:'Yes please'}
+    ],
+    sys:[
+      {ico:'⚡', st:'Cross-program eligibility run', sb:'One determination engine, 14 programs, 5 agencies, one pass. Rules-as-code keeps it consistent and auditable.', stat:'11 evaluated · 6 eligible'},
+      {ico:'✅', st:'Deliver-now, validate-after', sb:'Where statute permits, benefits start immediately. Income verification completes asynchronously; discrepancies are reconciled gently, not punitively.', stat:'2 enrollments live'},
+      {ico:'🏛️', st:'Agencies coordinated invisibly', sb:'Health, agriculture, labor, and revenue systems updated via shared event bus. Maya sees one government, not five.', stat:'5 systems synced'},
+      {ico:'📊', st:'Outcome metrics logged', sb:'Time-to-determination: 84 seconds. Burden hours saved: ~22. Eligible-but-unenrolled gap: closed for this household.', stat:'Recorded'}
+    ],
+    sysFoot:'<b>Old world:</b> 3 applications, 40+ pages, 6–10 weeks of waiting, and benefits left on the table. <b>New world:</b> 84 seconds.'
+  },
+  {
+    label:"Step 4 of 6",
+    title:"Honest about limits — empathy when the answer is 'not yet'",
+    body:"Not everything can be instant. Some programs are budget-capped, and pretending otherwise destroys trust. So the system is transparent and kind: Maya knows exactly where she stands on the childcare waitlist, what happens next, and what she can do meanwhile. Hard answers, delivered like a human would.",
+    prinLabel:"Served with empathy",
+    prin:"Empathy isn't just speed and warm copy — it's delivering hard information honestly, with context and a path forward, instead of a cold form letter (or silence).",
+    phone:[
+      {type:'time', text:'Tuesday · 6:34 PM'},
+      {type:'gov', text:'Childcare scholarships are limited by this year’s budget, so there’s a waitlist. I know that’s not what you hoped to hear — here’s exactly where things stand:'},
+      {type:'card', ct:'🧸 Childcare scholarship', cb:'You’re #34 in line for your area. Based on current movement, that’s likely coverage around your baby’s 3rd month. I placed you in line today — months before you’d otherwise apply — and your spot is locked.', badge:'Waitlisted · #34 · tracking', bclass:'b-amber'},
+      {type:'gov', text:'I’ll update you the moment your number changes — you’ll never have to call to ask. And in the meantime, two licensed providers near you have sliding-scale openings. Want me to share them?'},
+      {type:'me', text:'Yes — and thank you for just telling me straight.'},
+      {type:'gov', text:'Always. You’ll never have to wonder where you stand with us. 💛'}
+    ],
+    sys:[
+      {ico:'📉', st:'Capped program handled honestly', sb:'Real-time waitlist position, movement forecasting, and proactive placement at the earliest legal moment — first in, first out, visible to all.', stat:'Position locked'},
+      {ico:'📡', st:'Demand signal to policymakers', sb:'Every waitlisted family becomes anonymized, real-time evidence of unmet need — feeding the budget process instead of vanishing.', stat:'Reported'},
+      {ico:'🤝', st:'Alternatives brokered', sb:'System searches licensed-provider registry and community programs to bridge the gap — civil society woven in, not bolted on.', stat:'2 options found'}
+    ],
+    sysFoot:'<b>The shift:</b> scarcity still exists — but opacity, re-calling, and dead silence don’t. Transparency is the floor.'
+  },
+  {
+    label:"Step 5 of 6",
+    title:"The system carries her through — months of complexity, zero burden",
+    body:"Support doesn't end at enrollment. Maya's journey unfolds over months, and the system stays a step ahead: reminders, renewals, and — when the baby arrives — birth registration, the SSN, adding the baby to coverage, and starting paid leave happen from one moment in the hospital. The 'long tail' of government tasks simply… happens.",
+    prinLabel:"The system carries the burden of complexity",
+    prin:"Each downstream step today is a separate office, form, and queue. Here, one life event cascades automatically through every obligation and entitlement — the Estonian pattern, made proactive.",
+    phone:[
+      {type:'time', text:'Maya’s journey · next 8 months'},
+      {type:'tlwrap', items:[
+        {tt:'Week 12 — Checkup nudge', tb:'“Your next prenatal visit is due. Three times that fit your work schedule — tap one.”', tw:'Done in one tap', future:false},
+        {tt:'Week 20 — WIC auto-renewed', tb:'No recertification interview. Income re-verified silently from wage data; benefits continue without a gap.', tw:'Zero action needed', future:false},
+        {tt:'Week 36 — Leave ready', tb:'“Your paid family leave is fully set up. It starts automatically the day baby arrives. Rest up. 💛”', tw:'Pre-staged', future:false},
+        {tt:'Birth day — One moment, in hospital', tb:'Maya confirms baby’s name on her phone. That single act: registers the birth, requests the SSN, adds baby to her coverage, starts her leave, and updates the childcare waitlist.', tw:'5 services · 1 tap', future:true},
+        {tt:'Month 3 — Childcare comes through', tb:'“Good news — your scholarship is active. Here are your matched providers with open infant spots.”', tw:'Proactive, as promised', future:true}
+      ]}
+    ],
+    sys:[
+      {ico:'🔄', st:'Event-driven orchestration', sb:'The birth event fans out across vital records, SSA, Medicaid, labor, and childcare systems — each update verified and logged.', stat:'5 cascades mapped'},
+      {ico:'🛡️', st:'Continuous, gentle verification', sb:'Renewals run on existing data. Humans review only flags and exceptions — caseworkers freed for the families who need judgment and care.', stat:'0 forms generated'},
+      {ico:'🧑‍💼', st:'Human in the loop where it matters', sb:'A real caseworker is one tap away at every step, with Maya’s full context already on screen — no re-telling her story.', stat:'Warm handoff ready'}
+    ],
+    sysFoot:'<b>Burden accounting:</b> ~30 hours of paperwork, 5 office visits, and 4 renewal cliffs — absorbed by the system, invisible to Maya.'
+  },
+  {
+    label:"Step 6 of 6",
+    title:"Why this matters — and how we'll know it's working",
+    body:"Maya's story is one life event in one state. The same architecture — life-event triggers, consented data reuse, instant cross-program determination, empathetic delivery — generalizes to losing a job, turning 65, starting a business, or recovering from a disaster. The goal isn't AI. The goal is better outcomes for people, and every metric lines up to that.",
+    prinLabel:"The 2030 moonshot",
+    prin:"Instant and personalized access to public services for everyone — initiated by life changes, delivered with empathy, with government carrying the complexity it created.",
+    phone:[
+      {type:'time', text:'The measures that matter'},
+      {type:'card', ct:'⏱️ Time to determination', cb:'From weeks to minutes — measured per service, published openly.', badge:'Instant', bclass:'b-green'},
+      {type:'card', ct:'🎯 Eligible people actually served', cb:'Close the gap between who qualifies and who receives — the truest measure of delivery.', badge:'Coverage', bclass:'b-green'},
+      {type:'card', ct:'🕰️ Burden hours returned', cb:'Hours of paperwork and waiting given back to people and to government staff alike.', badge:'Time saved', bclass:'b-blue'},
+      {type:'card', ct:'💛 Trust & satisfaction', cb:'Do people feel seen, respected, and told the truth — especially when the answer is hard?', badge:'Empathy', bclass:'b-amber'},
+      {type:'card', ct:'🔍 Accuracy & fairness', cb:'Error rates, appeal outcomes, and audited equity of determinations — transparent by default.', badge:'Accountable', bclass:'b-blue'}
+    ],
+    sys:[
+      {ico:'🗺️', st:'Generalizes across life events', sb:'Pregnancy today; job loss, aging, disability, small business, disaster recovery tomorrow — same rails, different triggers.', stat:'Pattern, not pilot'},
+      {ico:'🧱', st:'What it takes to build', sb:'Agentic & data protocols · legal and consent frameworks · rules-as-code · cross-agency event bus · empathetic service design.', stat:'The work ahead'},
+      {ico:'🚀', st:'Where it starts', sb:'One state, one life event, one end-to-end prototype that makes the other 49 jealous.', stat:'12–18 months'}
+    ],
+    sysFoot:'<b>This is the conversation:</b> if this is the experience we want people to have by 2030, what do we build first?'
+  }
+];
+
+let cur = 0;
+const $ = id => document.getElementById(id);
+
+function renderPhone(items){
+  const el = $('phoneBody'); el.innerHTML = '';
+  let delay = 0;
+  items.forEach(it => {
+    let node;
+    if(it.type==='time'){ node = document.createElement('div'); node.className='timechip'; node.textContent = it.text; }
+    else if(it.type==='gov'||it.type==='me'){ node = document.createElement('div'); node.className='bubble '+it.type; node.textContent = it.text; }
+    else if(it.type==='notif'){ node = document.createElement('div'); node.className='notif'; node.innerHTML = `<div class="nt">${it.nt}</div><div class="nb">${it.nb}</div><div class="nfrom">${it.nfrom}</div>`; }
+    else if(it.type==='card'){ node = document.createElement('div'); node.className='card'; node.innerHTML = `<div class="ct">${it.ct}</div><div class="cb">${it.cb}</div><span class="badge ${it.bclass}">${it.badge}</span>`; }
+    else if(it.type==='consent'){ node = document.createElement('div'); node.className='consent'; node.innerHTML = `<div class="ct2">Your permission, your choice</div><ul>${it.items.map(x=>`<li>${x}</li>`).join('')}</ul><div class="cbtns"><div class="cbtn cyes">Yes, check for me</div><div class="cbtn cno">Not now</div></div>`; }
+    else if(it.type==='tlwrap'){ node = document.createElement('div'); node.className='tl'; node.innerHTML = it.items.map((x,i)=>`<div class="tli ${x.future?'future':''}" style="animation-delay:${i*0.12}s"><div class="tt">${x.tt}</div><div class="tb">${x.tb}</div><div class="tw">${x.tw}</div></div>`).join(''); }
+    if(node){ if(node.classList && !node.classList.contains('tl')){ node.style.animationDelay = (delay+=0.12)+'s'; } el.appendChild(node); }
+  });
+  el.scrollTop = 0;
+}
+
+function renderSys(items, foot){
+  const el = $('sysBody'); el.innerHTML = '';
+  items.forEach((it,i)=>{
+    const d = document.createElement('div'); d.className='si'; d.style.animationDelay = (i*0.15)+'s';
+    d.innerHTML = `<div class="ico">${it.ico}</div><div><div class="st">${it.st}</div><div class="sb">${it.sb}</div><div class="stat">${it.stat}</div></div>`;
+    el.appendChild(d);
+  });
+  $('sysFoot').innerHTML = foot;
+}
+
+function go(n){
+  cur = Math.max(0, Math.min(steps.length-1, n));
+  const s = steps[cur];
+  $('stepLabel').textContent = s.label;
+  $('narrTitle').textContent = s.title;
+  $('narrBody').textContent = s.body;
+  $('prinLabel').textContent = s.prinLabel;
+  $('prinBody').textContent = s.prin;
+  renderPhone(s.phone);
+  renderSys(s.sys, s.sysFoot);
+  $('btnBack').style.visibility = cur===0 ? 'hidden':'visible';
+  $('btnNext').textContent = cur===steps.length-1 ? 'Start over ↺' : 'Next →';
+  document.querySelectorAll('#dots span').forEach((d,i)=>d.classList.toggle('on', i===cur));
+}
+
+const dotsEl = $('dots');
+steps.forEach((_,i)=>{ const sp=document.createElement('span'); sp.onclick=()=>go(i); dotsEl.appendChild(sp); });
+$('btnNext').onclick = ()=> go(cur===steps.length-1 ? 0 : cur+1);
+$('btnBack').onclick = ()=> go(cur-1);
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') go(cur+1); if(e.key==='ArrowLeft') go(cur-1); });
+go(0);
+</script>
+</body>
+</html>

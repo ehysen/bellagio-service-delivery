@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account Statement — Chesapeake Community Bank</title>
+<style>
+  @page { size: letter; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1c1c1c; background: #ffffff;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .page { width: 8.5in; min-height: 11in; padding: 0.7in 0.75in 0.8in 0.75in; }
+
+  .head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark { width: 44px; height: 44px; border-radius: 8px; background: #1f5d3a; color: #fff; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .bank .name { font-size: 19px; font-weight: 800; color: #1f5d3a; letter-spacing: 0.3px; }
+  .bank .sub { font-size: 11px; color: #667; letter-spacing: 1px; text-transform: uppercase; }
+  .stmt-title { text-align: right; }
+  .stmt-title .t { font-size: 15px; font-weight: 700; color: #1f5d3a; letter-spacing: 1px; }
+  .stmt-title .p { font-size: 12px; color: #555; margin-top: 3px; }
+  .rule { height: 3px; background: #1f5d3a; margin: 14px 0 0; }
+
+  .info { display: flex; justify-content: space-between; margin: 18px 0 6px; gap: 24px; }
+  .box { font-size: 12px; line-height: 1.6; }
+  .box .lbl { font-size: 10px; color: #8a93a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .box .who { font-weight: 700; color: #1c1c1c; }
+
+  .summary { display: flex; gap: 12px; margin: 18px 0 22px; }
+  .card { flex: 1; border: 1px solid #d9e0e8; border-radius: 8px; padding: 12px 14px; background: #f6faf7; }
+  .card .lbl { font-size: 10px; color: #8a93a0; text-transform: uppercase; letter-spacing: 1px; }
+  .card .amt { font-size: 17px; font-weight: 800; color: #1c1c1c; margin-top: 4px; }
+  .card.hl { background: #1f5d3a; border-color: #1f5d3a; }
+  .card.hl .lbl { color: #bfe0cc; }
+  .card.hl .amt { color: #ffffff; }
+
+  .sec-title { font-size: 12px; font-weight: 700; color: #1f5d3a; letter-spacing: 1px; text-transform: uppercase; margin: 6px 0 8px; }
+  table.ledger { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.ledger thead th { background: #eef4ef; color: #5a6675; text-transform: uppercase; font-size: 10px; letter-spacing: 0.8px; text-align: left; padding: 8px 10px; border-bottom: 1px solid #d9e0e8; }
+  table.ledger th.num, table.ledger td.num { text-align: right; }
+  table.ledger td { padding: 7px 10px; border-bottom: 1px solid #eef1f5; }
+  table.ledger tr:nth-child(even) td { background: #fafdfb; }
+  .dep { color: #1d7a46; font-weight: 600; }
+  .wd  { color: #b3261e; }
+  .bal { font-weight: 600; color: #1c1c1c; }
+  tr.begin td, tr.end td { background: #eef4ef !important; font-weight: 700; }
+  tr.end td { border-top: 2px solid #1f5d3a; }
+  tr.sev td { background: #e9f5ee !important; }
+
+  .foot { margin-top: 22px; border-top: 1px solid #e2e7ee; padding-top: 10px; font-size: 10px; color: #8a93a0; line-height: 1.6; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <div class="brand">
+        <div class="mark">CC</div>
+        <div class="bank">
+          <div class="name">Chesapeake Community Bank</div>
+          <div class="sub">Member FDIC</div>
+        </div>
+      </div>
+      <div class="stmt-title">
+        <div class="t">ACCOUNT STATEMENT</div>
+        <div class="p">Statement period: May 1 – May 31, 2026</div>
+        <div class="p">Page 1 of 1</div>
+      </div>
+    </div>
+    <div class="rule"></div>
+
+    <div class="info">
+      <div class="box">
+        <div class="lbl">Account holder</div>
+        <div class="who">James Okafor</div>
+        3115 Belair Road<br>
+        Baltimore, MD 21213
+      </div>
+      <div class="box" style="text-align:right;">
+        <div class="lbl">Account</div>
+        <div class="who">Everyday Checking</div>
+        Account no. ······7390<br>
+        Routing 052099999
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="card"><div class="lbl">Beginning balance</div><div class="amt">$1,284.30</div></div>
+      <div class="card"><div class="lbl">Deposits &amp; credits</div><div class="amt">+$9,640.00</div></div>
+      <div class="card"><div class="lbl">Withdrawals &amp; debits</div><div class="amt">−$2,541.02</div></div>
+      <div class="card hl"><div class="lbl">Ending balance</div><div class="amt">$8,383.28</div></div>
+    </div>
+
+    <div class="sec-title">Transaction history</div>
+    <table class="ledger">
+      <thead>
+        <tr>
+          <th style="width:11%;">Date</th>
+          <th>Description</th>
+          <th class="num" style="width:16%;">Amount</th>
+          <th class="num" style="width:16%;">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="begin"><td>05/01</td><td>Beginning balance</td><td class="num"></td><td class="num">$1,284.30</td></tr>
+        <tr><td>05/05</td><td>Direct deposit — HARBORLINE LOGISTICS PAYROLL</td><td class="num dep">+$1,640.00</td><td class="num bal">$2,924.30</td></tr>
+        <tr><td>05/12</td><td>ACH debit — BELAIR PROPERTY GROUP (rent)</td><td class="num wd">−$1,325.00</td><td class="num bal">$1,599.30</td></tr>
+        <tr><td>05/15</td><td>Bill pay — BGE UTILITY</td><td class="num wd">−$158.40</td><td class="num bal">$1,440.90</td></tr>
+        <tr><td>05/18</td><td>Debit card — GIANT FOOD (groceries)</td><td class="num wd">−$104.22</td><td class="num bal">$1,336.68</td></tr>
+        <tr class="sev"><td>05/22</td><td>Direct deposit — HARBORLINE LOGISTICS SEVERANCE (one-time)</td><td class="num dep">+$8,000.00</td><td class="num bal">$9,336.68</td></tr>
+        <tr><td>05/24</td><td>Debit card — CVS PHARMACY</td><td class="num wd">−$42.10</td><td class="num bal">$9,294.58</td></tr>
+        <tr><td>05/27</td><td>ACH debit — LITTLE HARBOR CHILDCARE</td><td class="num wd">−$480.00</td><td class="num bal">$8,814.58</td></tr>
+        <tr><td>05/29</td><td>Debit card — GIANT FOOD (groceries)</td><td class="num wd">−$96.30</td><td class="num bal">$8,718.28</td></tr>
+        <tr><td>05/30</td><td>ATM withdrawal — Belair Road branch</td><td class="num wd">−$200.00</td><td class="num bal">$8,518.28</td></tr>
+        <tr><td>05/31</td><td>ACH debit — GEICO AUTO INSURANCE</td><td class="num wd">−$135.00</td><td class="num bal">$8,383.28</td></tr>
+        <tr class="end"><td>05/31</td><td>Ending balance</td><td class="num"></td><td class="num">$8,383.28</td></tr>
+      </tbody>
+    </table>
+
+    <div class="foot">
+      This is the only deposit account held by James Okafor at Chesapeake Community Bank. The May 22
+      credit is a one-time severance payment, not recurring income. Total liquid funds on deposit:
+      <strong>$8,383.28</strong>.<br>
+      Chesapeake Community Bank · 30 Light Street, Baltimore, MD 21202 · (410) 555-0155 · Member FDIC.
+      SAMPLE — DEMONSTRATION ONLY.
+    </div>
+  </div>
+</body>
+</html>
