@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Account Statement — First State Credit Union</title>
+<style>
+  @page { size: letter; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1c1c1c;
+    background: #ffffff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page { width: 8.5in; min-height: 11in; padding: 0.7in 0.75in 0.8in 0.75in; }
+
+  .head { display: flex; justify-content: space-between; align-items: flex-start; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .mark {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: #14406b; color: #fff; font-weight: 800; font-size: 18px;
+    display: flex; align-items: center; justify-content: center; letter-spacing: 0.5px;
+  }
+  .bank .name { font-size: 19px; font-weight: 800; color: #14406b; letter-spacing: 0.3px; }
+  .bank .sub { font-size: 11px; color: #667; letter-spacing: 1px; text-transform: uppercase; }
+  .stmt-title { text-align: right; }
+  .stmt-title .t { font-size: 15px; font-weight: 700; color: #14406b; letter-spacing: 1px; }
+  .stmt-title .p { font-size: 12px; color: #555; margin-top: 3px; }
+
+  .rule { height: 3px; background: #14406b; margin: 14px 0 0; }
+
+  .info { display: flex; justify-content: space-between; margin: 18px 0 6px; gap: 24px; }
+  .box { font-size: 12px; line-height: 1.6; }
+  .box .lbl { font-size: 10px; color: #8a93a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .box .who { font-weight: 700; color: #1c1c1c; }
+
+  .summary { display: flex; gap: 12px; margin: 18px 0 22px; }
+  .card {
+    flex: 1; border: 1px solid #d9e0e8; border-radius: 8px; padding: 12px 14px;
+    background: #f7f9fc;
+  }
+  .card .lbl { font-size: 10px; color: #8a93a0; text-transform: uppercase; letter-spacing: 1px; }
+  .card .amt { font-size: 18px; font-weight: 800; color: #1c1c1c; margin-top: 4px; }
+  .card.hl { background: #14406b; border-color: #14406b; }
+  .card.hl .lbl { color: #b9cbe2; }
+  .card.hl .amt { color: #ffffff; }
+
+  .sec-title { font-size: 12px; font-weight: 700; color: #14406b; letter-spacing: 1px; text-transform: uppercase; margin: 6px 0 8px; }
+
+  table.ledger { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.ledger thead th {
+    background: #eef2f7; color: #5a6675; text-transform: uppercase; font-size: 10px;
+    letter-spacing: 0.8px; text-align: left; padding: 8px 10px; border-bottom: 1px solid #d9e0e8;
+  }
+  table.ledger th.num, table.ledger td.num { text-align: right; }
+  table.ledger td { padding: 7px 10px; border-bottom: 1px solid #eef1f5; }
+  table.ledger tr:nth-child(even) td { background: #fafbfd; }
+  .dep { color: #1d7a46; font-weight: 600; }
+  .wd  { color: #b3261e; }
+  .bal { font-weight: 600; color: #1c1c1c; }
+  tr.begin td, tr.end td { background: #eef2f7 !important; font-weight: 700; }
+  tr.end td { border-top: 2px solid #14406b; }
+
+  .foot {
+    margin-top: 26px; border-top: 1px solid #e2e7ee; padding-top: 10px;
+    font-size: 10px; color: #8a93a0; line-height: 1.6;
+  }
+  .nsf { margin-top: 6px; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <div class="brand">
+        <div class="mark">FS</div>
+        <div class="bank">
+          <div class="name">First State Credit Union</div>
+          <div class="sub">Member-owned · NCUA insured</div>
+        </div>
+      </div>
+      <div class="stmt-title">
+        <div class="t">ACCOUNT STATEMENT</div>
+        <div class="p">Statement period: May 1 – May 31, 2026</div>
+        <div class="p">Page 1 of 1</div>
+      </div>
+    </div>
+    <div class="rule"></div>
+
+    <div class="info">
+      <div class="box">
+        <div class="lbl">Account holder</div>
+        <div class="who">Maria Hernandez</div>
+        1428 Gwynns Falls Parkway, Apt 3B<br>
+        Baltimore, MD 21217
+      </div>
+      <div class="box" style="text-align:right;">
+        <div class="lbl">Account</div>
+        <div class="who">Free Checking</div>
+        Account no. ······4821<br>
+        Routing 255077777
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="card"><div class="lbl">Beginning balance</div><div class="amt">$1,842.55</div></div>
+      <div class="card"><div class="lbl">Deposits &amp; credits</div><div class="amt">+$1,792.00</div></div>
+      <div class="card"><div class="lbl">Withdrawals &amp; debits</div><div class="amt">−$3,314.41</div></div>
+      <div class="card hl"><div class="lbl">Ending balance</div><div class="amt">$320.14</div></div>
+    </div>
+
+    <div class="sec-title">Transaction history</div>
+    <table class="ledger">
+      <thead>
+        <tr>
+          <th style="width:12%;">Date</th>
+          <th>Description</th>
+          <th class="num" style="width:15%;">Amount</th>
+          <th class="num" style="width:16%;">Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="begin"><td>05/01</td><td>Beginning balance</td><td class="num"></td><td class="num">$1,842.55</td></tr>
+        <tr><td>05/02</td><td>Direct deposit — ACME RETAIL PAYROLL</td><td class="num dep">+$1,180.00</td><td class="num bal">$3,022.55</td></tr>
+        <tr><td>05/03</td><td>ACH debit — PARKVIEW APARTMENTS (rent)</td><td class="num wd">−$1,450.00</td><td class="num bal">$1,572.55</td></tr>
+        <tr><td>05/06</td><td>Bill pay — BGE UTILITY</td><td class="num wd">−$142.30</td><td class="num bal">$1,430.25</td></tr>
+        <tr><td>05/09</td><td>Debit card — SAFEWAY #1123 (groceries)</td><td class="num wd">−$96.41</td><td class="num bal">$1,333.84</td></tr>
+        <tr><td>05/14</td><td>Debit card — CVS PHARMACY</td><td class="num wd">−$38.70</td><td class="num bal">$1,295.14</td></tr>
+        <tr><td>05/19</td><td>Debit card — GIANT FOOD (groceries)</td><td class="num wd">−$112.00</td><td class="num bal">$1,183.14</td></tr>
+        <tr><td>05/22</td><td>Direct deposit — ACME RETAIL FINAL PAYCHECK</td><td class="num dep">+$612.00</td><td class="num bal">$1,795.14</td></tr>
+        <tr><td>05/24</td><td>ACH debit — GEICO AUTO INSURANCE</td><td class="num wd">−$128.00</td><td class="num bal">$1,667.14</td></tr>
+        <tr><td>05/27</td><td>ACH debit — BRIGHT BEGINNINGS CHILDCARE</td><td class="num wd">−$540.00</td><td class="num bal">$1,127.14</td></tr>
+        <tr><td>05/29</td><td>Debit card — SAFEWAY #1123 (groceries)</td><td class="num wd">−$84.00</td><td class="num bal">$1,043.14</td></tr>
+        <tr><td>05/30</td><td>ATM withdrawal — Charles Center branch</td><td class="num wd">−$300.00</td><td class="num bal">$743.14</td></tr>
+        <tr><td>05/31</td><td>Bill pay — BALTIMORE GAS &amp; ELECTRIC</td><td class="num wd">−$423.00</td><td class="num bal">$320.14</td></tr>
+        <tr class="end"><td>05/31</td><td>Ending balance</td><td class="num"></td><td class="num">$320.14</td></tr>
+      </tbody>
+    </table>
+
+    <div class="foot">
+      This is the only deposit account held by Maria Hernandez at First State Credit Union. No
+      savings, money-market, or certificate accounts are associated with this member as of the
+      statement date. Total liquid funds on deposit: <strong>$320.14</strong>.
+      <div class="nsf">First State Credit Union · 75 Charles Center, Baltimore, MD 21201 · (410) 555-0188 · Federally insured by NCUA.</div>
+    </div>
+  </div>
+</body>
+</html>

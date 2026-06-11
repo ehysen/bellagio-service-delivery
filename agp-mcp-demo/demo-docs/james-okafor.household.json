@@ -1,0 +1,15 @@
+{
+  "caseId": "demo-james",
+  "members": [
+    { "id": "james", "age": 41, "earnedIncome": 0, "unearnedIncome": 0 },
+    { "id": "child-1", "age": 12 },
+    { "id": "child-2", "age": 7 }
+  ],
+  "shelterCost": 1325,
+  "utilityStatus": "heating_cooling",
+  "liquidAssets": 8383.28,
+  "verification": {
+    "earnedIncome": "unverified",
+    "liquidAssets": "unverified"
+  }
+}

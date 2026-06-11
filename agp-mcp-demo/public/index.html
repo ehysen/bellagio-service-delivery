@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>AGP · SNAP after a job loss — served immediately, verified after</title>
+<style>
+  :root{
+    --ink:#1a2433; --ink-soft:#4a5568; --ink-faint:#8a94a6;
+    --bg:#f4f1ec; --card:#ffffff; --line:#e3ddd3;
+    --accent:#2f6f5e; --accent-soft:#e7f1ed; --accent-deep:#1f4f43;
+    --warm:#c4622d; --warm-soft:#faeee5;
+    --sys:#27303f; --sys-card:#323d4f; --sys-ink:#cdd6e4; --sys-accent:#7fd4b9;
+    --radius:18px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh;}
+
+  .top{max-width:1180px; margin:0 auto; padding:28px 24px 0;}
+  .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--warm); font-weight:700;}
+  h1{font-size:26px; font-weight:800; margin-top:6px;}
+  .vision{margin-top:8px; max-width:780px; color:var(--ink-soft); font-size:15px; line-height:1.55;}
+  .vision strong{color:var(--ink);}
+
+  .stage{max-width:1180px; margin:22px auto 0; padding:0 24px 40px; display:grid; grid-template-columns:300px 390px 1fr; gap:26px; align-items:start;}
+  @media (max-width:1020px){ .stage{grid-template-columns:1fr;} .narr{order:1} .phonewrap{order:2} .syswrap{order:3} }
+
+  .narr{position:sticky; top:24px;}
+  .stepnum{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent);}
+  .stepnum .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+  .narr h2{font-size:22px; font-weight:800; margin:10px 0 10px; line-height:1.25;}
+  .narr p{font-size:14.5px; line-height:1.6; color:var(--ink-soft);}
+  .principle{margin-top:16px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
+  .principle .pl{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--warm); font-weight:700; margin-bottom:5px;}
+  .principle .pt{font-size:13.5px; line-height:1.5; color:var(--ink);}
+
+  .nav{margin-top:22px; display:flex; gap:10px; align-items:center;}
+  button.nbtn{border:none; cursor:pointer; font-weight:700; font-size:14px; padding:11px 20px; border-radius:999px; transition:all .15s;}
+  .next{background:var(--accent); color:#fff;}
+  .next:hover{background:var(--accent-deep);}
+  .back{background:transparent; color:var(--ink-soft); border:1px solid var(--line)!important;}
+  .back:hover{background:#fff;}
+  .dots{display:flex; gap:6px; margin-top:16px;}
+  .dots span{width:7px;height:7px;border-radius:50%;background:#d4cdc1;cursor:pointer;transition:all .2s;}
+  .dots span.on{background:var(--accent); transform:scale(1.3);}
+  .hint{margin-top:10px; font-size:12px; color:var(--ink-faint);}
+
+  .phonewrap{display:flex; justify-content:center;}
+  .phone{width:375px; max-width:100%; background:#0e1116; border-radius:44px; padding:12px; box-shadow:0 24px 60px rgba(20,25,35,.25);}
+  .screen{background:#fbfaf7; border-radius:34px; overflow:hidden; height:700px; display:flex; flex-direction:column; position:relative;}
+  .statusbar{display:flex; justify-content:space-between; padding:12px 22px 6px; font-size:12px; font-weight:600; color:var(--ink);}
+  .apphead{padding:10px 18px 12px; border-bottom:1px solid #eee7da; background:#fbfaf7;}
+  .apphead .an{font-size:15px; font-weight:800;}
+  .apphead .as{font-size:11.5px; color:var(--ink-faint); margin-top:1px;}
+  .scroll{flex:1; overflow-y:auto; padding:16px 14px 90px; scroll-behavior:smooth;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .bubble{max-width:86%; border-radius:18px; padding:11px 14px; font-size:13.5px; line-height:1.5; margin-bottom:10px; animation:pop .35s ease both;}
+  .gov{background:#fff; border:1px solid #eae3d6; color:var(--ink); border-bottom-left-radius:6px;}
+  .me{background:var(--accent); color:#fff; margin-left:auto; border-bottom-right-radius:6px;}
+  .timechip{font-size:10.5px; color:var(--ink-faint); text-align:center; margin:10px 0 12px; letter-spacing:.04em;}
+  @keyframes pop{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+
+  .notif{background:#fff; border:1px solid #eae3d6; border-left:4px solid var(--accent); border-radius:14px; padding:12px 14px; margin-bottom:10px; animation:pop .35s ease both;}
+  .notif .nt{font-size:12.5px; font-weight:700;}
+  .notif .nb{font-size:12.5px; color:var(--ink-soft); margin-top:3px; line-height:1.45;}
+  .notif .nfrom{font-size:10.5px; color:var(--ink-faint); margin-top:6px; text-transform:uppercase; letter-spacing:.08em;}
+
+  .card{background:#fff; border:1px solid #eae3d6; border-radius:16px; padding:14px; margin-bottom:10px; animation:pop .4s ease both;}
+  .card .ct{font-size:13px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  .card .cb{font-size:12.5px; color:var(--ink-soft); margin-top:5px; line-height:1.5;}
+  .badge{display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:999px; margin-top:8px;}
+  .b-green{background:var(--accent-soft); color:var(--accent-deep);}
+  .b-amber{background:#fdf3e0; color:#9a6217;}
+  .b-blue{background:#e8eefb; color:#2b4a8f;}
+  .b-red{background:#fbe8e8; color:#9a2b2b;}
+
+  .cite{font-size:10.5px; color:var(--ink-faint); margin-top:6px; line-height:1.45;}
+  .cite b{color:var(--accent-deep); font-weight:700;}
+
+  .consent{background:#fff; border:1.5px solid var(--accent); border-radius:16px; padding:14px; margin-bottom:10px; animation:pop .4s ease both;}
+  .consent .ct2{font-size:13px; font-weight:800; color:var(--accent-deep);}
+  .consent ul{margin:8px 0 4px 0; list-style:none;}
+  .consent li{font-size:12.5px; color:var(--ink-soft); padding:5px 0; display:flex; gap:8px; line-height:1.4;}
+  .consent li::before{content:"✓"; color:var(--accent); font-weight:800;}
+  .cbtns{display:flex; gap:8px; margin-top:10px;}
+  .cbtn{flex:1; text-align:center; font-size:12.5px; font-weight:700; padding:9px; border-radius:10px;}
+  .cyes{background:var(--accent); color:#fff;}
+  .cno{background:#f1ede6; color:var(--ink-soft);}
+
+  /* Snap / upload */
+  .snaprow{display:flex; flex-direction:column; gap:8px; margin-bottom:10px;}
+  .snaptile{display:flex; align-items:center; gap:10px; background:#fff; border:1.5px dashed var(--accent); border-radius:14px; padding:12px 14px; cursor:pointer; animation:pop .4s ease both;}
+  .snaptile.done{border-style:solid; border-color:#cfe4db; background:var(--accent-soft);}
+  .snaptile .si2{font-size:20px;}
+  .snaptile .stt{font-size:12.5px; font-weight:800;}
+  .snaptile .stb{font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
+  .snaptile input{display:none;}
+  .sample{font-size:11px; color:var(--accent); cursor:pointer; text-decoration:underline; margin-left:auto;}
+  .thumb{width:46px;height:46px;border-radius:10px;object-fit:cover;border:1px solid var(--line);}
+  .spin{display:inline-block; width:14px;height:14px;border:2px solid #cfe4db;border-top-color:var(--accent);border-radius:50%;animation:rot .7s linear infinite;vertical-align:-2px;}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  .flip{transition:background .4s ease, border-color .4s ease;}
+
+  .inputbar{position:absolute; bottom:0; left:0; right:0; padding:12px 14px 18px; background:linear-gradient(transparent, #fbfaf7 30%);}
+  .inputinner{background:#fff; border:1px solid #e5ddcf; border-radius:999px; display:flex; align-items:center; padding:10px 16px; gap:10px; font-size:13px; color:var(--ink-faint);}
+  .inputinner .mic{margin-left:auto; color:var(--accent); font-size:16px;}
+
+  .tl{position:relative; padding-left:20px; margin-bottom:10px;}
+  .tl::before{content:""; position:absolute; left:6px; top:6px; bottom:-4px; width:2px; background:#e3dccd;}
+  .tli{position:relative; padding-bottom:14px; animation:pop .4s ease both;}
+  .tli::before{content:""; position:absolute; left:-20px; top:4px; width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid #fbfaf7;}
+  .tli.future::before{background:#d8d1c2;}
+  .tli .tt{font-size:12.5px; font-weight:800;}
+  .tli .tb{font-size:12px; color:var(--ink-soft); line-height:1.45; margin-top:2px;}
+  .tli .tw{font-size:10.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.07em; margin-top:3px;}
+
+  .syswrap{position:sticky; top:24px;}
+  .sys{background:var(--sys); border-radius:var(--radius); padding:18px 18px 14px; color:var(--sys-ink); box-shadow:0 14px 40px rgba(20,25,35,.18);}
+  .sys h3{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--sys-accent); display:flex; align-items:center; gap:8px;}
+  .sys h3::before{content:""; width:8px; height:8px; border-radius:50%; background:var(--sys-accent); animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1} 50%{opacity:.35}}
+  .sys .sub{font-size:12px; color:#94a1b5; margin-top:6px; line-height:1.5;}
+  .sysitems{margin-top:14px; display:flex; flex-direction:column; gap:9px;}
+  .si{background:var(--sys-card); border-radius:12px; padding:11px 13px; display:flex; gap:11px; animation:pop .4s ease both;}
+  .si .ico{font-size:16px; line-height:1.2;}
+  .si .st{font-size:12.5px; font-weight:700; color:#eef2f8;}
+  .si .sb{font-size:12px; color:#9fabbe; line-height:1.5; margin-top:2px;}
+  .si .stat{font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--sys-accent); margin-top:5px;}
+  .si code{font-size:11px; color:#bfe9d8;}
+  .sysfoot{margin-top:14px; padding-top:12px; border-top:1px solid #3c4759; font-size:11.5px; color:#8e9bb0; line-height:1.5;}
+  .sysfoot b{color:var(--sys-accent);}
+
+  .colhead{font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink-faint); font-weight:700; margin-bottom:10px; text-align:center;}
+
+  .ftr{max-width:1180px; margin:0 auto; padding:0 24px 36px; font-size:12px; color:var(--ink-faint); line-height:1.6;}
+  .ftr code{background:#ece6da; padding:1px 5px; border-radius:5px;}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="kicker">AGP reference demo · Maryland SNAP · decision support, not autopilot</div>
+  <h1>Maria lost her job — and applies for food assistance in one conversation</h1>
+  <p class="vision"><strong>The Agentic Government Protocol lets an agent walk the five-step service-delivery flow</strong> — discover → check eligibility → authorize → request → receipt — over an interface (MCP) the agent already speaks. This walkthrough runs the <strong>real Maryland SNAP rules engine</strong> live: the agent recommends, the agency decides, and unverified facts return <em>"pending — verify after"</em>, never an auto-denial. Snap a photo of a document and watch the determination resolve.</p>
+</div>
+
+<div class="stage">
+  <div class="narr">
+    <div class="stepnum"><span class="dot"></span><span id="stepLabel">Step 1 of 6</span></div>
+    <h2 id="narrTitle"></h2>
+    <p id="narrBody"></p>
+    <div class="principle">
+      <div class="pl" id="prinLabel">AGP step</div>
+      <div class="pt" id="prinBody"></div>
+    </div>
+    <div class="nav">
+      <button class="nbtn back" id="btnBack">← Back</button>
+      <button class="nbtn next" id="btnNext">Next →</button>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div class="hint">Use ← → arrow keys, or click the dots. Add <code>?mock=1</code> to run offline.</div>
+  </div>
+
+  <div class="phonewrap">
+    <div>
+      <div class="colhead">What Maria experiences</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="statusbar"><span>9:41</span><span>𝗹𝗹 ⌁ ▮</span></div>
+          <div class="apphead">
+            <div class="an">Maryland DHS · Food Supplement</div>
+            <div class="as">One front door to public services</div>
+          </div>
+          <div class="scroll" id="phoneBody"></div>
+          <div class="inputbar"><div class="inputinner">Message, voice, or photo… <span class="mic">🎙</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="syswrap">
+    <div class="colhead">The AGP objects the agent moves</div>
+    <div class="sys">
+      <h3>Behind the scenes</h3>
+      <div class="sub">Every step carries one AGP object — and the eligibility decision is the real engine's output, with its policy citations.</div>
+      <div class="sysitems" id="sysBody"></div>
+      <div class="sysfoot" id="sysFoot"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ftr">
+  Reference implementation of the <strong>Agentic Government Protocol (AGP) v0.1</strong> worked example, "SNAP after a job loss." The eligibility math is the real, tested Maryland Food Supplement Program engine (FY2026, eff. Oct 1 2025) — the agent recommends; <strong>Maryland DHS is the agency of record and decides</strong>. The same backend is reachable by Claude/ChatGPT over MCP at <code>/mcp</code>. Names and documents are illustrative; the "validate-after" path is an allowed pattern, not a guarantee.
+</div>
+
+<script>
+const MOCK = location.search.includes('mock');
+const $ = id => document.getElementById(id);
+
+// Frontend tracks only the accumulated verified facts; the server holds the
+// canonical demo household ("Maria", HH of 3, job loss) and runs the engine.
+const state = { verifiedFacts: [], lastResult: null, receiptId: null };
+
+// ---- MOCK fixtures (offline fallback) --------------------------------------
+function mockResult(){
+  const verified = new Set(state.verifiedFacts.map(f=>f.fact));
+  const pending = ['earnedIncome','liquidAssets'].filter(f=>!verified.has(f));
+  const decision = pending.length ? 'pending_verification' : 'eligible';
+  return {
+    decision, monthlyBenefit:785, ongoingMonthlyBenefit:785,
+    unverifiedFacts:pending,
+    rationale:[
+      {label:'Net income test', reason:'Net monthly income $0 ≤ 100% FPL limit $2,221 (HH 3).', citation:'MD-FSP §409/§600'},
+      {label:'Gross income test', reason:'Gross monthly income $0 ≤ 130% FPL limit $2,888 (HH 3).', citation:'MD-FSP §409'},
+      {label:'Allotment', reason:'Max allotment $785 − 30% of net income $0 = $785.', citation:'MD-FSP §600/§411'}
+    ],
+    flags: pending.length ? [{code:'verification_required', severity:'blocking', message:'Pending verification — unverified material inputs: '+pending.join(', ')+'. No denial may be issued until these are verified per §408.', citation:'MD-FSP §408 Verification'}] : [],
+    qcFindings: pending.includes('earnedIncome') ? [{code:'income_unverified', severity:'high', message:'No income document on file.', citation:'MD-FSP §408 (income verification)'}] : [],
+    agpObjects:{ service:{serviceId:'md-snap', name:'Maryland Food Supplement Program (SNAP)', agencyOfRecord:'Maryland DHS', deliveryPattern:'validate-after'}, eligibilityRule:{ruleId:'md-snap-rule', version:'FY2026'} }
+  };
+}
+function mockUpload(docType){
+  const m = {
+    termination_letter:{fact:'earnedIncome',value:0,fields:[{key:'employer',value:'Acme Retail LLC'},{key:'lastDayWorked',value:'2026-05-22'}]},
+    bank_statement:{fact:'liquidAssets',value:320,fields:[{key:'institution',value:'First State CU'},{key:'balance',value:'$320.14'}]},
+    pay_stub:{fact:'earnedIncome',value:0,fields:[{key:'note',value:'final paycheck'}]},
+    lease:{fact:'shelterCost',value:1450,fields:[{key:'monthlyRent',value:'$1,450'}]},
+    utility_bill:{fact:'utilityStatus',fields:[{key:'type',value:'heating/cooling'}]},
+    photo_id:{fact:'identity',fields:[{key:'name',value:'Maria'}]}
+  }[docType];
+  return { documentType:docType, extractionBackend:'mock', verifiedFacts:[{fact:m.fact,status:'verified',value:m.value,fields:m.fields}], extractedFields:m.fields };
+}
+
+async function api(path, opts, mockFn){
+  if(MOCK) return mockFn();
+  try{
+    const r = await fetch(path, opts);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return await r.json();
+  }catch(e){
+    console.warn('api fallback for', path, e.message);
+    return mockFn();
+  }
+}
+
+// ---- phone + sys rendering --------------------------------------------------
+function appendPhone(html){
+  const el=$('phoneBody'); const wrap=document.createElement('div'); wrap.innerHTML=html;
+  while(wrap.firstChild) el.appendChild(wrap.firstChild);
+  el.scrollTop = el.scrollHeight;
+}
+function renderPhone(items){
+  const el=$('phoneBody'); el.innerHTML=''; let delay=0;
+  (items||[]).forEach(it=>{
+    let node;
+    if(it.type==='time'){ node=document.createElement('div'); node.className='timechip'; node.textContent=it.text; }
+    else if(it.type==='gov'||it.type==='me'){ node=document.createElement('div'); node.className='bubble '+it.type; node.textContent=it.text; }
+    else if(it.type==='notif'){ node=document.createElement('div'); node.className='notif'; node.innerHTML=`<div class="nt">${it.nt}</div><div class="nb">${it.nb}</div><div class="nfrom">${it.nfrom}</div>`; }
+    else if(it.type==='card'){ node=document.createElement('div'); node.className='card'; node.innerHTML=`<div class="ct">${it.ct}</div><div class="cb">${it.cb}</div>${it.badge?`<span class="badge ${it.bclass}">${it.badge}</span>`:''}`; }
+    else if(it.type==='consent'){ node=document.createElement('div'); node.className='consent'; node.innerHTML=`<div class="ct2">Your permission, your choice</div><ul>${it.items.map(x=>`<li>${x}</li>`).join('')}</ul><div class="cbtns"><div class="cbtn cyes">Yes, check for me</div><div class="cbtn cno">Not now</div></div>`; }
+    if(node){ node.style.animationDelay=(delay+=0.12)+'s'; el.appendChild(node); }
+  });
+  el.scrollTop=0;
+}
+function renderSys(items, foot){
+  const el=$('sysBody'); el.innerHTML='';
+  (items||[]).forEach((it,i)=>{ const d=document.createElement('div'); d.className='si'; d.style.animationDelay=(i*0.12)+'s';
+    d.innerHTML=`<div class="ico">${it.ico}</div><div><div class="st">${it.st}</div><div class="sb">${it.sb}</div><div class="stat">${it.stat}</div></div>`; el.appendChild(d); });
+  $('sysFoot').innerHTML=foot||'';
+}
+
+// ---- decision card ----------------------------------------------------------
+function decisionMeta(d){
+  if(d==='eligible') return {label:'Approved', cls:'b-green'};
+  if(d==='pending_verification') return {label:'Provisional · pending verification', cls:'b-amber'};
+  if(d==='ineligible') return {label:'Not eligible', cls:'b-red'};
+  return {label:'Needs human review', cls:'b-blue'};
+}
+function resultCardHTML(result){
+  const m = decisionMeta(result.decision);
+  const benefit = result.decision==='ineligible' ? '—' : ('$'+result.monthlyBenefit+'/mo');
+  const cites = (result.rationale||[]).filter(r=>r.citation).slice(0,3)
+    .map(r=>`<div class="cite"><b>${r.citation}</b> — ${r.reason||r.label}</div>`).join('');
+  const badge = result.decision==='eligible' ? `${m.label} · ${benefit}` : m.label;
+  return `<div class="card flip" id="decisionCard">
+      <div class="ct">🍎 Maryland SNAP — your determination</div>
+      <div class="cb">Estimated monthly benefit: <b>${benefit}</b> (household of 3). This is a recommendation; Maryland DHS makes the final decision.</div>
+      <span class="badge ${m.cls}">${badge}</span>
+      ${cites}
+    </div>`;
+}
+
+// ---- live hydration per step ------------------------------------------------
+async function assess(){
+  return api('/api/assess-eligibility',
+    {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({verifiedFacts:state.verifiedFacts})},
+    mockResult);
+}
+
+async function hydrateAssess(){
+  appendPhone(`<div class="bubble gov">I checked the Maryland rules against what we know so far…<span class="spin" style="margin-left:6px"></span></div>`);
+  const result = await assess();
+  state.lastResult = result;
+  // replace the "checking" bubble's spinner
+  appendPhone(resultCardHTML(result));
+  appendPhone(`<div class="bubble gov">Because your income and savings aren't verified yet, this is <b>provisional</b> — I can't let the state deny you over missing paperwork. One photo each and we finalize it.</div>`);
+  const svc = result.agpObjects?.service||{}; const rule = result.agpObjects?.eligibilityRule||{};
+  renderSys([
+    {ico:'📄', st:'Service discovered', sb:`<code>${svc.serviceId||'md-snap'}</code> — ${svc.name||'Maryland SNAP'} · agency of record ${svc.agencyOfRecord||'MD DHS'}.`, stat:`deliveryPattern: ${svc.deliveryPattern||'validate-after'}`},
+    {ico:'⚖️', st:'EligibilityRule evaluated', sb:`Engine ran <code>${rule.ruleId||'md-snap-rule'}</code> (${rule.version||'FY2026'}): gross & net income tests, asset test, allotment.`, stat:`decision: ${result.decision}`},
+    {ico:'🔒', st:'Authorization withheld', sb:'No final determination issued — the §408 gate holds the case as pending verification.', stat:`unverified: ${(result.unverifiedFacts||[]).join(', ')||'none'}`}
+  ], '<b>§408 gate:</b> unverified material inputs return <b>pending_verification</b> — the engine never auto-denies on missing data.');
+}
+
+async function hydrateSnap(){
+  // Current determination card on top.
+  if(state.lastResult) appendPhone(resultCardHTML(state.lastResult));
+  appendPhone(`<div class="bubble gov">To finalize, snap a photo of each document. Use your camera, or tap “use sample”.</div>`);
+  const tiles = [
+    {doc:'termination_letter', ico:'📄', tt:'Termination letter or last pay stub', tb:'Verifies your income'},
+    {doc:'bank_statement', ico:'🏦', tt:'Bank statement', tb:'Verifies your savings (asset test)'}
+  ];
+  const rowId='snaprow';
+  appendPhone(`<div class="snaprow" id="${rowId}">`+tiles.map(t=>`
+     <label class="snaptile" id="tile-${t.doc}">
+       <span class="si2">${t.ico}</span>
+       <span><span class="stt">${t.tt}</span><span class="stb">${t.tb}</span></span>
+       <input type="file" accept="image/*" capture="environment" data-doc="${t.doc}">
+       <span class="sample" data-doc="${t.doc}">use sample</span>
+     </label>`).join('')+`</div>`);
+  // wire inputs + sample links
+  document.querySelectorAll(`#${rowId} input[type=file]`).forEach(inp=>{
+    inp.addEventListener('change', e=>{ const f=e.target.files[0]; if(f) uploadDoc(e.target.dataset.doc, f); });
+  });
+  document.querySelectorAll(`#${rowId} .sample`).forEach(s=>{
+    s.addEventListener('click', e=>{ e.preventDefault(); uploadDoc(e.target.dataset.doc, null); });
+  });
+  renderSys([
+    {ico:'📸', st:'Document → verified fact', sb:'Each upload maps to the real engine VerificationFact it proves: termination letter → earnedIncome, bank statement → liquidAssets.', stat:'awaiting documents'},
+    {ico:'🔁', st:'Re-determination on upload', sb:'The verified fact is written into the household and the SNAP engine re-runs immediately.', stat:'validate-after'}
+  ], '<b>Tip:</b> with no API key the server extracts a deterministic stub value, so the demo works fully offline.');
+}
+
+async function uploadDoc(docType, file){
+  const tile = $('tile-'+docType);
+  if(tile){ tile.querySelector('.stb').innerHTML = 'Reading document… <span class="spin"></span>'; }
+  let res;
+  if(file && !MOCK){
+    const fd = new FormData(); fd.append('file', file); fd.append('documentType', docType);
+    res = await api('/upload', {method:'POST', body:fd}, ()=>mockUpload(docType));
+  } else {
+    // sample path: post documentType only (server returns stub), or mock offline
+    const fd = new FormData(); fd.append('documentType', docType);
+    res = await api('/upload', {method:'POST', body:fd}, ()=>mockUpload(docType));
+  }
+  // accumulate verified facts (dedupe by fact)
+  const facts = res.verifiedFacts||[];
+  const newFactNames = new Set(facts.map(f=>f.fact));
+  state.verifiedFacts = state.verifiedFacts.filter(f=>!newFactNames.has(f.fact)).concat(facts);
+  // mark tile done
+  if(tile){ tile.classList.add('done');
+    const read = (res.extractedFields||[]).map(f=>`${f.value}`).slice(0,2).join(' · ');
+    tile.querySelector('.stb').innerHTML = `Verified ✓ ${read?'· '+read:''} <span style="opacity:.6">(${res.extractionBackend})</span>`;
+    const samp = tile.querySelector('.sample'); if(samp) samp.remove();
+  }
+  // re-assess and update the decision card
+  const result = await assess();
+  state.lastResult = result;
+  const card = $('decisionCard');
+  if(card){ const tmp=document.createElement('div'); tmp.innerHTML=resultCardHTML(result); card.replaceWith(tmp.firstChild); }
+  else appendPhone(resultCardHTML(result));
+  if(result.decision==='eligible'){
+    appendPhone(`<div class="bubble gov">That's everything. ✅ You're approved for <b>$${result.monthlyBenefit}/month</b>. Tap Next to submit and get your receipt.</div>`);
+  }
+}
+
+async function hydrateSubmit(){
+  appendPhone(`<div class="bubble gov">Submitting your request to Maryland DHS…<span class="spin" style="margin-left:6px"></span></div>`);
+  const data = await api('/api/service-request',
+    {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify({verifiedFacts:state.verifiedFacts})},
+    ()=>{ const r=mockResult(); return {receipt:{receiptId:'rcpt_demo', status: r.decision==='eligible'?'approved':'provisional_approval', decisionSnapshot:r, auditTrail:[{event:'request_received'},{event:'determination_run'}]}, serviceRequest:{requestId:'req_demo'}, statusUrl:'/api/status/rcpt_demo'}; });
+  const rc = data.receipt; state.receiptId = rc.receiptId;
+  const statusBadge = rc.status==='approved' ? 'b-green' : 'b-amber';
+  appendPhone(`<div class="card"><div class="ct">🧾 Receipt — ${rc.status.replace('_',' ')}</div>
+    <div class="cb">SNAP, household of 3 · <b>$${rc.decisionSnapshot.monthlyBenefit}/month</b>. Benefits load to your EBT card. You have a full audit trail and an appeal path.</div>
+    <span class="badge ${statusBadge}">Receipt ${rc.receiptId}</span></div>`);
+  appendPhone(`<div class="tl">
+    <div class="tli"><div class="tt">Submitted</div><div class="tb">Standardized ServiceRequest sent to the agency of record.</div><div class="tw">Step 4</div></div>
+    <div class="tli"><div class="tt">Verified</div><div class="tb">Income & assets confirmed from your documents.</div><div class="tw">validate-after, resolved</div></div>
+    <div class="tli"><div class="tt">Benefit loaded</div><div class="tb">EBT provisioning initiated.</div><div class="tw">Receipt issued</div></div>
+  </div>`);
+  renderSys([
+    {ico:'📨', st:'ServiceRequest submitted', sb:`<code>${data.serviceRequest.requestId}</code> referencing the SNAP service and a scoped Authorization.`, stat:'Step 4'},
+    {ico:'🧾', st:'Receipt issued', sb:`<code>${rc.receiptId}</code> — status <b>${rc.status}</b>, with audit trail and correction/appeal path.`, stat:'Step 5'},
+    {ico:'🗺️', st:'Same rails generalize', sb:'Job loss → SNAP today; pregnancy, aging, disaster recovery tomorrow — same five-step AGP flow, different EligibilityRule.', stat:'pattern, not pilot'}
+  ], '<b>This is the conversation:</b> AGP gives the process objects, MCP gives the access channel, and the agency keeps authority. The agent recommended; DHS decided.');
+}
+
+// ---- steps ------------------------------------------------------------------
+const steps = [
+  { label:'Step 1 of 6', live:null,
+    title:'A life change starts the conversation — Maria doesn\'t have to find government',
+    body:'Two weeks after a layoff, Maria messages the state: "I lost my job and I\'m worried about groceries." Her agent queries the AGP catalog and finds SNAP — read-only, no personal data touched yet. Discovery is the first AGP step.',
+    prinLabel:'AGP Step 1 — Service discovery',
+    prin:'The agency publishes a machine-readable Service object once; any agent can read it. No forms, no agency-by-agency hunting.',
+    phone:[
+      {type:'time', text:'Tuesday · 2:14 PM'},
+      {type:'me', text:'I was laid off two weeks ago. I have two kids and I\'m worried about food.'},
+      {type:'gov', text:'I\'m sorry, Maria. You may qualify for SNAP (food assistance) right away — and because your income just dropped, there\'s a fast path. Want me to check? It takes about a minute.'},
+      {type:'me', text:'Yes, please.'}
+    ],
+    sys:[
+      {ico:'📡', st:'Life-event → discovery', sb:'A job-loss signal surfaces SNAP from the AGP service catalog.', stat:'read-only'},
+      {ico:'📄', st:'Service object read', sb:'Maryland SNAP, channels agp/web/in-person/phone, requires identity/householdSize/income/residency, deliveryPattern validate-after.', stat:'published by DHS'}
+    ],
+    sysFoot:'<b>Discovery is read-only:</b> no personal data is touched until Maria consents.'
+  },
+  { label:'Step 2 of 6', live:null,
+    title:'Consent is scoped and human — not 12 pages of legalese',
+    body:'Before touching any record, the agent asks permission in plain language and produces a scoped Authorization for THIS application only. AGP v0.1 specifies that the grant exists and that DHS checks it; the cryptographic proof is a companion layer.',
+    prinLabel:'AGP Step 3 — Authorization & consent',
+    prin:'Instant service is only legitimate if people understand and control it. The Authorization is scoped, revocable, and verified by the agency.',
+    phone:[
+      {type:'time', text:'Tuesday · 2:15 PM'},
+      {type:'gov', text:'To check, I\'d like permission to use records the state already has — only for this SNAP application:'},
+      {type:'consent', items:[
+        'Your income (wage & unemployment) — to run the income tests',
+        'Your household & address — for size and residency',
+        'Your savings — for the asset test'
+      ]},
+      {type:'me', text:'Yes — for this application only.'},
+      {type:'gov', text:'Thank you. You can withdraw anytime, and you\'ll see exactly what I did with your information.'}
+    ],
+    sys:[
+      {ico:'🔐', st:'Scoped Authorization created', sb:'A demo-unsigned Authorization for the SNAP service only. AGP defers the cryptographic proof to a companion layer.', stat:'3 scopes granted'},
+      {ico:'⚖️', st:'Verified by the agency', sb:'The agency of record checks the authorization before acting on any request.', stat:'agency-checked'}
+    ],
+    sysFoot:'<b>The principle:</b> the constituent grants; the agency verifies; the agent only carries the request.'
+  },
+  { label:'Step 3 of 6', live:'assess',
+    title:'Instant determination — run by the real Maryland SNAP engine',
+    body:'The agent assembles Maria\'s attributes and runs them against the published EligibilityRule. This calls the real, tested FSP engine live. Because her income and savings aren\'t verified yet, the §408 gate returns "pending verification" — provisional, never a denial.',
+    prinLabel:'AGP Step 2 — Eligibility assessment',
+    prin:'Determination is instantaneous and fully cited — but the determination still belongs to the agency. Unverified facts hold the case as pending, not denied.',
+    phone:[
+      {type:'time', text:'Tuesday · 2:16 PM'},
+      {type:'gov', text:'Running the Maryland rules now — household of 3, income just dropped to zero…'}
+    ],
+    sys:[], sysFoot:''
+  },
+  { label:'Step 4 of 6', live:null,
+    title:'Honest about the gate — why it\'s "pending," and the way forward',
+    body:'Rather than a cold denial or silent wait, the agent is transparent: it shows exactly which material facts the law requires verified (per §408), surfaces the QC findings, and offers a single next step — snap a photo. Empathy is honest information plus a path forward.',
+    prinLabel:'Validate-after, shown honestly',
+    prin:'The §408 verification gate is a feature, not a failure: it protects Maria from an auto-denial while one document is outstanding.',
+    phone:[
+      {type:'time', text:'Tuesday · 2:16 PM'},
+      {type:'gov', text:'Here\'s exactly where you stand, and why:'},
+      {type:'card', ct:'⏳ Why it\'s provisional', cb:'Federal rule §408 says the state can\'t finalize SNAP until income and assets are verified — but it also can\'t deny you while a document is missing. So you\'re held as pending, not denied.', badge:'§408 · pending verification', bclass:'b-amber'},
+      {type:'card', ct:'✅ Pre-certification QC', cb:'A quality-control layer flags the gaps a caseworker would catch — here, no income document on file — before the case is ever certified.', badge:'1 QC finding · resolvable', bclass:'b-blue'},
+      {type:'gov', text:'Good news: one photo of a document each, and we finalize it. Tap Next.'}
+    ],
+    sys:[
+      {ico:'🛡️', st:'§408 material facts', sb:'Income, assets, shelter, disability, and household composition must be verified before a final determination — never auto-denied.', stat:'pending: income, assets'},
+      {ico:'🔎', st:'QC catches errors early', sb:'The pre-cert checker mirrors the discrepancies that drive the national payment-error rate, surfaced before certification.', stat:'human-reviewable'}
+    ],
+    sysFoot:'<b>Empathy =</b> hard information delivered honestly, with a concrete path forward.'
+  },
+  { label:'Step 5 of 6', live:'snap',
+    title:'📸 Snap a document — and watch the determination resolve',
+    body:'Maria photographs her termination letter and a bank statement. Each upload verifies a real engine fact (earned income → $0; liquid assets → under the limit), the household is re-evaluated, and the case flips from amber "pending" to green "approved" — the validate-after promise, made concrete.',
+    prinLabel:'The document feature',
+    prin:'A photo resolves the §408 gate: the verified value is written into the household and the SNAP engine re-runs. Over MCP, the same step is the submit_verification_document tool.',
+    phone:[ {type:'time', text:'Tuesday · 2:17 PM'} ],
+    sys:[], sysFoot:''
+  },
+  { label:'Step 6 of 6', live:'submit',
+    title:'Receipt, status, and why this matters',
+    body:'The agent submits a standardized ServiceRequest to Maryland DHS and receives a Receipt: approved, with an audit trail and an appeal path. The agent carried the request; the agency decided. The same five-step flow generalizes to any life event and any program.',
+    prinLabel:'AGP Steps 4 & 5 — Request & Receipt',
+    prin:'AGP gives the process objects (Service, EligibilityRule, Authorization, ServiceRequest, Receipt); MCP gives the access channel; the agency of record keeps authority over the decision.',
+    phone:[ {type:'time', text:'Tuesday · 2:18 PM'} ],
+    sys:[], sysFoot:''
+  }
+];
+
+let cur = 0;
+function go(n){
+  cur = Math.max(0, Math.min(steps.length-1, n));
+  const s = steps[cur];
+  $('stepLabel').textContent = s.label;
+  $('narrTitle').textContent = s.title;
+  $('narrBody').textContent = s.body;
+  $('prinLabel').textContent = s.prinLabel;
+  $('prinBody').textContent = s.prin;
+  renderPhone(s.phone);
+  if(s.live) renderSys([], ''); else renderSys(s.sys, s.sysFoot);
+  $('btnBack').style.visibility = cur===0 ? 'hidden':'visible';
+  $('btnNext').textContent = cur===steps.length-1 ? 'Start over ↺' : 'Next →';
+  document.querySelectorAll('#dots span').forEach((d,i)=>d.classList.toggle('on', i===cur));
+  if(s.live==='assess') hydrateAssess();
+  else if(s.live==='snap') hydrateSnap();
+  else if(s.live==='submit') hydrateSubmit();
+}
+
+const dotsEl=$('dots');
+steps.forEach((_,i)=>{ const sp=document.createElement('span'); sp.onclick=()=>go(i); dotsEl.appendChild(sp); });
+$('btnNext').onclick=()=>go(cur===steps.length-1?0:cur+1);
+$('btnBack').onclick=()=>go(cur-1);
+document.addEventListener('keydown', e=>{ if(e.key==='ArrowRight') go(cur+1); if(e.key==='ArrowLeft') go(cur-1); });
+go(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Render Blueprint — deploys the AGP MCP demo as a web service with a stable URL.
+# In Render: New → Blueprint → connect the repo containing this file.
+# If agp-mcp-demo is a SUBDIRECTORY of a larger repo, set rootDir below to its path.
+services:
+  - type: web
+    name: agp-snap-demo
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # rootDir: agp-mcp-demo        # uncomment if this repo's root is one level up
+    plan: free
+    healthCheckPath: /health       # open (unauthenticated), so the probe always passes
+    autoDeploy: true
+    envVars:
+      - key: AGP_EXTRACTOR
+        value: stub                # offline stub extraction; needs no secrets
+      # --- Optional, set as secrets in the Render dashboard (sync: false) ---
+      # - key: AGP_BEARER_TOKEN     # require Authorization: Bearer <token> on /mcp,/api,/upload
+      #   sync: false
+      # - key: ANTHROPIC_API_KEY    # enable real Claude vision document reading
+      #   sync: false
+      # - key: AGP_EXTRACTOR        # then flip this to "auto" to use vision when a key is present
+      #   value: auto
