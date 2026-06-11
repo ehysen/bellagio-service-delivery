@@ -133,3 +133,45 @@ export interface Receipt {
   createdAt: string;
   updatedAt: string;
 }
+
+/**
+ * AGP Step 5, issued — the formal outcome artifacts produced once a case is
+ * APPROVED. Demonstration only: no legal effect, no funds move.
+ */
+export interface CertificateOfEligibility {
+  type: "CertificateOfEligibility";
+  certificateId: string;
+  receiptId: string;
+  serviceId: string;
+  program: string;
+  agencyOfRecord: string;
+  constituentName: string;
+  decision: "approved";
+  monthlyBenefit: number;
+  benefitCurrency: string;
+  householdSize: number;
+  effectiveDate: string; // YYYY-MM-DD
+  certificationPeriodMonths: number;
+  recertifyBy: string; // YYYY-MM-DD
+  legalBasis: string[]; // policy citations from the determination
+  issuedAt: string; // ISO datetime
+  viewUrl: string; // hosted, human-readable certificate
+  disclaimer: string;
+}
+
+/** Demo benefit-issuance (disbursement) confirmation. */
+export interface DisbursementConfirmation {
+  type: "DisbursementConfirmation";
+  confirmationId: string;
+  receiptId: string;
+  program: string;
+  amount: number;
+  currency: string;
+  method: string;
+  accountRef: string; // masked
+  firstIssuanceDate: string; // YYYY-MM-DD
+  schedule: string; // "monthly"
+  nextIssuanceDate: string; // YYYY-MM-DD
+  status: "scheduled";
+  disclaimer: string;
+}

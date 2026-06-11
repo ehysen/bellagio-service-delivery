@@ -34,6 +34,21 @@ export const config: Config = {
   openRouterApiKey: env("OPENROUTER_API_KEY"),
 };
 
+/**
+ * Public base URL — used to build openable certificate links. Prefer an explicit
+ * PUBLIC_BASE_URL env; otherwise auto-learn it from the first inbound request's
+ * Host header (see the middleware in server.ts), falling back to localhost.
+ */
+const FIXED_BASE_URL = env("PUBLIC_BASE_URL");
+let observedBaseUrl: string | undefined = FIXED_BASE_URL;
+
+export function setObservedBaseUrl(url: string): void {
+  if (!FIXED_BASE_URL) observedBaseUrl = url;
+}
+export function getBaseUrl(): string {
+  return observedBaseUrl ?? `http://localhost:${config.port}`;
+}
+
 /** Resolve whether real vision extraction is possible given keys + mode. */
 export function visionEnabled(): boolean {
   if (config.extractorMode === "stub") return false;

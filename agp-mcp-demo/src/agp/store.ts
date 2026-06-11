@@ -4,7 +4,13 @@
  * consistent with the in-process MCP session map).
  */
 import { randomUUID } from "node:crypto";
-import type { Authorization, Receipt, DocumentType } from "@/agp/types";
+import type {
+  Authorization,
+  Receipt,
+  DocumentType,
+  CertificateOfEligibility,
+  DisbursementConfirmation,
+} from "@/agp/types";
 import type { Household } from "@/lib/models";
 
 export interface StoredDocument {
@@ -20,6 +26,8 @@ const receipts = new Map<string, Receipt>();
 const documents = new Map<string, StoredDocument>();
 /** The working household behind each receipt, so document uploads can re-run it. */
 const receiptHouseholds = new Map<string, Household>();
+const certificates = new Map<string, CertificateOfEligibility>();
+const disbursements = new Map<string, DisbursementConfirmation>();
 
 export function id(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 16)}`;
@@ -44,6 +52,20 @@ export function getReceiptHousehold(receiptId: string): Household | undefined {
 }
 export function setReceiptHousehold(receiptId: string, household: Household): void {
   receiptHouseholds.set(receiptId, household);
+}
+
+export function putCertificate(c: CertificateOfEligibility): void {
+  certificates.set(c.certificateId, c);
+}
+export function getCertificate(certificateId: string): CertificateOfEligibility | undefined {
+  return certificates.get(certificateId);
+}
+
+export function putDisbursement(d: DisbursementConfirmation): void {
+  disbursements.set(d.confirmationId, d);
+}
+export function getDisbursement(confirmationId: string): DisbursementConfirmation | undefined {
+  return disbursements.get(confirmationId);
 }
 
 export function putDocument(doc: Omit<StoredDocument, "documentId">): StoredDocument {

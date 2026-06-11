@@ -19,8 +19,15 @@ stub runs. James requires vision (or passing `extractedValue`) — see his secti
 | File | Document type (`documentType`) | Verifies (`VerificationFact`) | Value read | Effect |
 |---|---|---|---|---|
 | `termination-letter.*` | `termination_letter` | `earnedIncome` | **$0** (no ongoing wages) | resolves the income gate |
+| `pay-stub.*` | `pay_stub` | `earnedIncome` | **$0** (final paycheck — no ongoing wages) | alternative to the termination letter for the income gate |
 | `bank-statement.*` | `bank_statement` | `liquidAssets` | **$320.14** (≤ $3,000 limit) | resolves the asset gate |
 | `proof-of-rent.*` | `lease` | `shelterCost` | **$1,450** (monthly rent) | satisfies the residency requirement; documents shelter cost |
+| `photo-id.*` | `photo_id` | `identity` | name only (specimen) | satisfies the identity requirement |
+
+> The `termination-letter` and `pay-stub` both prove `earnedIncome = $0` — use **either one** for the
+> income gate (the pay stub is her *final* paycheck, so it shows no ongoing wages). The `photo-id` is a
+> clearly-watermarked **SPECIMEN** from a fictional issuer — it's not a copy of a real credential and
+> isn't a gating fact for Maria; include it only to satisfy the service's `identity` requirement.
 
 > **The proof of rent is optional for Maria.** Only `earnedIncome` and `liquidAssets` are marked
 > unverified, so those two gate her case (`engine.ts:37`). `shelterCost` is already attested at

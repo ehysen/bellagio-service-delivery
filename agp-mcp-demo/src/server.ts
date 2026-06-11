@@ -15,14 +15,24 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
-import { config } from "@/config";
+import { config, setObservedBaseUrl } from "@/config";
 import { bearerAuth } from "@/auth";
 import { buildServer } from "@/mcp/buildServer";
 import bridgeRouter from "@/rest/bridge";
 import { uploadMiddleware, uploadHandler } from "@/rest/upload";
+import { getCertificate } from "@/agp/store";
+import { certificateHtml } from "@/agp/certificate-html";
 
 const app = express();
+app.set("trust proxy", true); // honor X-Forwarded-Proto/Host behind Render/Fly/etc.
 app.use(express.json({ limit: "16mb" })); // base64 images can be large
+
+// Learn our public base URL from inbound requests (for certificate links).
+app.use((req, _res, next) => {
+  const host = req.get("host");
+  if (host) setObservedBaseUrl(`${req.protocol}://${host}`);
+  next();
+});
 
 // Unauthenticated health check.
 app.get("/health", (_req, res) => {
@@ -81,6 +91,16 @@ app.delete("/mcp", handleSessionRequest);
 // ── Upload + REST bridge + static frontend ─────────────────────────────────
 app.post("/upload", uploadMiddleware, uploadHandler);
 app.use("/api", bridgeRouter);
+
+// Openable Certificate of Eligibility (unauthenticated, demo). Served as HTML.
+app.get("/certificate/:id", (req, res) => {
+  const cert = getCertificate(req.params.id);
+  if (!cert) {
+    res.status(404).type("html").send("<h1>Certificate not found</h1><p>It may have expired (the demo keeps state in memory and resets on restart).</p>");
+    return;
+  }
+  res.type("html").send(certificateHtml(cert));
+});
 
 const publicDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "public");
 app.use(express.static(publicDir));
