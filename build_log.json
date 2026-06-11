@@ -1,0 +1,59 @@
+{
+  "project": "SNAP Eligibility Agent (PoC)",
+  "policy": {
+    "jurisdiction": "Maryland Food Supplement Program (FSP/SNAP)",
+    "fiscalYear": "FY2026",
+    "effective": "2025-10-01",
+    "expires": "2026-09-30",
+    "region": "48 contiguous states + DC",
+    "sources": [
+      "USDA FNS FY2026 SNAP COLA memo (eff. 2025-10-01)",
+      "MD-FSP §600 Standards for Income and Deductions (SEPT 2025)",
+      "MD DHS Income Guidelines as of October 2025 (Eff. 10/01/2025)",
+      "MD-FSP §214 Utility Allowances (SEPT 2025)"
+    ]
+  },
+  "generatedAt": "2026-06-11T07:50:06.970Z",
+  "timers": {
+    "ingestToGreen": {
+      "start": "2026-06-11T07:38:42Z",
+      "green": "2026-06-11T07:46:50Z",
+      "elapsedSeconds": 488,
+      "elapsedHuman": "8m 8s",
+      "note": "Wall-clock from structured-ruleset spec to all known-answer tests green (PDF→green)."
+    }
+  },
+  "engine": {
+    "knownAnswerCases": 8,
+    "msPerDetermination": 0.0042,
+    "determinationsTimed": 16000,
+    "qcFindingsAcrossSuite": 1
+  },
+  "tokenUsage": {
+    "methodology": "Build tokens are an ESTIMATE: input = build brief + iterative policy-doc/tool-result reads (~180k); output = generated TypeScript source (chars/4 over 84003 source bytes) + reasoning/iteration. Per-case notice tokens are grounded in the actual rationale output size for case KC-01. Priced at current Claude API rates.",
+    "sourceBytes": 84003,
+    "build": {
+      "model": "claude-opus-4-8",
+      "inputTokens": 186000,
+      "outputTokens": 61001
+    },
+    "buildCostUSD": 2.46,
+    "policyChange": {
+      "model": "claude-opus-4-8",
+      "inputTokens": 25000,
+      "outputTokens": 8000
+    },
+    "policyChangeCostUSD": 0.33,
+    "perCaseNotice": {
+      "model": "claude-haiku-4-5",
+      "inputTokens": 481,
+      "outputTokens": 549
+    },
+    "perCaseNoticeCostUSD": 0.00323
+  },
+  "deliverables": {
+    "A": "translation_report.md",
+    "B": "analysis/benefit_model.md",
+    "C": "analysis/cost_model.md"
+  }
+}
