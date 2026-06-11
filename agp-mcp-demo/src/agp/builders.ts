@@ -10,6 +10,8 @@ import type { Household } from "@/lib/models";
 import type {
   Actor,
   Authorization,
+  CertificateOfEligibility,
+  DisbursementConfirmation,
   EligibilityResult,
   Receipt,
   ReceiptStatus,
@@ -17,6 +19,20 @@ import type {
 } from "@/agp/types";
 import { MATERIAL_FACTS } from "@/agp/catalog";
 import { id } from "@/agp/store";
+import { getBaseUrl } from "@/config";
+
+const DEMO_DISCLAIMER =
+  "DEMONSTRATION ONLY — produced by an AGP reference demo. This is not an official Maryland DHS " +
+  "determination, carries no legal effect, and no benefits or funds will be issued.";
+
+function addMonths(d: Date, n: number): Date {
+  const x = new Date(d);
+  x.setMonth(x.getMonth() + n);
+  return x;
+}
+function isoDate(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
 
 /** Material facts currently marked "unverified" on the household. */
 function unverifiedFacts(hh: Household): EligibilityResult["unverifiedFacts"] {
@@ -141,5 +157,65 @@ export function buildServiceRequest(args: {
     authorizationId: args.authorizationId,
     household: args.household,
     submittedAt: args.now,
+  };
+}
+
+/** Issue a demo Certificate of Eligibility from an approved Receipt. */
+export function buildCertificate(args: {
+  receipt: Receipt;
+  constituentName?: string;
+  now: string;
+}): CertificateOfEligibility {
+  const { receipt, now } = args;
+  const snap = receipt.decisionSnapshot;
+  const today = new Date(now);
+  const certPeriod = 12;
+  const citations = Array.from(
+    new Set(snap.rationale.filter((r) => r.citation).map((r) => r.citation)),
+  );
+  const certificateId = id("cert");
+  return {
+    type: "CertificateOfEligibility",
+    certificateId,
+    receiptId: receipt.receiptId,
+    serviceId: receipt.serviceId,
+    program: "Maryland Food Supplement Program (SNAP)",
+    agencyOfRecord: "Maryland Department of Human Services",
+    constituentName: args.constituentName ?? "Maria O. (demonstration applicant)",
+    decision: "approved",
+    monthlyBenefit: snap.monthlyBenefit,
+    benefitCurrency: "USD",
+    householdSize: snap.computation.householdSize,
+    effectiveDate: isoDate(today),
+    certificationPeriodMonths: certPeriod,
+    recertifyBy: isoDate(addMonths(today, certPeriod)),
+    legalBasis: citations,
+    issuedAt: now,
+    viewUrl: `${getBaseUrl()}/certificate/${certificateId}`,
+    disclaimer: DEMO_DISCLAIMER,
+  };
+}
+
+/** Build a demo benefit-issuance (disbursement) confirmation from an approved Receipt. */
+export function buildDisbursement(args: { receipt: Receipt; now: string }): DisbursementConfirmation {
+  const { receipt, now } = args;
+  const snap = receipt.decisionSnapshot;
+  const today = new Date(now);
+  return {
+    type: "DisbursementConfirmation",
+    confirmationId: id("pay"),
+    receiptId: receipt.receiptId,
+    program: "Maryland Food Supplement Program (SNAP)",
+    amount: snap.monthlyBenefit,
+    currency: "USD",
+    method:
+      "EBT card — Maryland Independence Card. (SNAP benefits load to an EBT card, not a bank " +
+      "deposit; this is the SNAP payment rail.)",
+    accountRef: "Maryland Independence Card ····-····-····-7341",
+    firstIssuanceDate: isoDate(today),
+    schedule: "monthly",
+    nextIssuanceDate: isoDate(addMonths(today, 1)),
+    status: "scheduled",
+    disclaimer: DEMO_DISCLAIMER + " No EBT card is issued and no money moves.",
   };
 }

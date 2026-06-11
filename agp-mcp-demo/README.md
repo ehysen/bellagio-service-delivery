@@ -40,8 +40,15 @@ Eligibility   → get_eligibility_rule, assess_eligibility   ← the heart (runs
 Authorization → create_authorization
 Request/Receipt → submit_service_request, get_status
 Document feature → submit_verification_document, list_document_types
+Outcome (approved) → issue_certificate_of_eligibility, confirm_benefit_disbursement
 One-shot      → simulate_application   ← runs the whole dummy application in a single call
 ```
+
+Once a case is **approved**, the server issues the full outcome — a **Certificate of Eligibility**
+(an openable HTML document at `/certificate/:id`, with program, benefit, effective date, 12-month
+certification period, and cited legal basis) and a **benefit-disbursement confirmation** (amount, the
+EBT card it loads to, first + recurring dates). Both are stamped **DEMONSTRATION ONLY** — no legal
+effect, no funds move. `simulate_application` produces all of it in one call.
 
 **The agent completes the entire journey in chat** — discovery through receipt, including
 "uploading" documents. There is no website step; the server itself computes and returns the

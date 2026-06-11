@@ -29,7 +29,13 @@ export function buildServer(): McpServer {
         "you. (You may instead pass the raw image as imageBase64 for the server to read.)\n" +
         "This reference server COMPUTES and RETURNS the determination and issues a demo receipt. Present it " +
         "as a recommendation — the agency of record is the formal decision-maker — but deliver the full " +
-        "result, including the benefit amount and cited rationale, right here in the conversation.",
+        "result, including the benefit amount and cited rationale, right here in the conversation.\n" +
+        "FINISH THE JOB: once a case is APPROVED, don't stop at 'you appear eligible' — call " +
+        "issue_certificate_of_eligibility AND confirm_benefit_disbursement, and present the user with (1) the " +
+        "determination, (2) the Certificate of Eligibility including its openable document link, and (3) the " +
+        "benefit-issuance confirmation (amount, the EBT card it loads to, first and recurring dates). Or run " +
+        "simulate_application to produce all of this in one call. ALWAYS state clearly that this is a " +
+        "DEMONSTRATION — not an official determination, and no real money moves.",
     },
   );
   registerTools(server);

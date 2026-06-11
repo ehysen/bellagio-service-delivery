@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Earnings Statement (Final Paycheck) — Acme Retail LLC</title>
+<style>
+  @page { size: letter; margin: 0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    color: #1c1c1c; background: #ffffff;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .page { width: 8.5in; min-height: 11in; padding: 0.75in 0.8in; }
+
+  .head { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0b3d2e; padding-bottom: 14px; }
+  .brand { display: flex; align-items: center; gap: 13px; }
+  .logo { width: 44px; height: 44px; border-radius: 8px; background: #0b3d2e; color: #fff; font-weight: 700; font-size: 22px; display: flex; align-items: center; justify-content: center; }
+  .co .name { font-size: 19px; font-weight: 800; color: #0b3d2e; letter-spacing: 0.3px; }
+  .co .sub { font-size: 11px; color: #667; letter-spacing: 1px; }
+  .stmt { text-align: right; }
+  .stmt .t { font-size: 15px; font-weight: 800; color: #0b3d2e; letter-spacing: 1px; }
+  .stmt .p { font-size: 12px; color: #555; margin-top: 2px; }
+
+  .banner {
+    margin: 16px 0 4px; background: #fbeaea; border: 1px solid #e3b9b6; border-radius: 8px;
+    padding: 10px 14px; color: #8a2a23; font-size: 13px; font-weight: 700;
+  }
+  .banner small { display:block; font-weight: 500; color:#9b4a44; font-size: 11px; margin-top:2px; }
+
+  .info { display: flex; justify-content: space-between; gap: 24px; margin: 16px 0 10px; }
+  .box { font-size: 12px; line-height: 1.6; }
+  .box .lbl { font-size: 10px; color: #8a93a0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+  .box .who { font-weight: 700; }
+
+  .cols { display: flex; gap: 14px; margin-top: 8px; }
+  .col { flex: 1; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: #0b3d2e; color: #fff; text-align: left; padding: 7px 10px; font-size: 10px; letter-spacing: 0.8px; text-transform: uppercase; }
+  th.num, td.num { text-align: right; }
+  td { padding: 6px 10px; border-bottom: 1px solid #eef1f0; }
+  tr.tot td { font-weight: 700; border-top: 2px solid #0b3d2e; background: #f3f7f5; }
+
+  .summary { display: flex; gap: 12px; margin: 16px 0 0; }
+  .card { flex: 1; border: 1px solid #cfd8d3; border-radius: 8px; padding: 11px 14px; background: #f7faf8; }
+  .card .lbl { font-size: 10px; color: #8a93a0; text-transform: uppercase; letter-spacing: 1px; }
+  .card .amt { font-size: 16px; font-weight: 800; margin-top: 4px; }
+  .card.hl { background: #0b3d2e; border-color: #0b3d2e; }
+  .card.hl .lbl { color: #bfe0cc; }
+  .card.hl .amt { color: #fff; }
+
+  .ongoing {
+    margin-top: 16px; border: 1px solid #cfd8d3; border-radius: 8px; overflow: hidden;
+  }
+  .ongoing .hd { background: #0b3d2e; color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 14px; }
+  .ongoing .row { display: flex; justify-content: space-between; padding: 11px 14px; font-size: 14px; }
+  .ongoing .row .v { font-weight: 800; color: #0b3d2e; font-size: 16px; }
+
+  .foot { margin-top: 22px; border-top: 1px solid #dde3e0; padding-top: 10px; font-size: 10px; color: #8a948f; line-height: 1.55; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="head">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div class="co">
+          <div class="name">ACME RETAIL LLC</div>
+          <div class="sub">Payroll · 200 Market Place, Suite 400, Baltimore, MD 21202</div>
+        </div>
+      </div>
+      <div class="stmt">
+        <div class="t">EARNINGS STATEMENT</div>
+        <div class="p">Pay date: May 29, 2026</div>
+        <div class="p">Period: May 9 – May 22, 2026</div>
+      </div>
+    </div>
+
+    <div class="banner">
+      FINAL PAYCHECK — employment ended May 22, 2026 (position eliminated).
+      <small>This is the last payment for this employee. No further or ongoing wages will be paid.</small>
+    </div>
+
+    <div class="info">
+      <div class="box">
+        <div class="lbl">Employee</div>
+        <div class="who">Maria Hernandez</div>
+        1428 Gwynns Falls Parkway, Apt 3B, Baltimore, MD 21217<br>
+        Employee ID 10482 · SSN ···-··-4821
+      </div>
+      <div class="box" style="text-align:right;">
+        <div class="lbl">Pay details</div>
+        Position: Sales Associate (Store #1123)<br>
+        Pay type: Hourly · $16.50/hr · Biweekly<br>
+        Status: Terminated 05/22/2026
+      </div>
+    </div>
+
+    <div class="cols">
+      <div class="col">
+        <table>
+          <thead><tr><th>Earnings</th><th class="num">Hours</th><th class="num">This period</th><th class="num">YTD</th></tr></thead>
+          <tbody>
+            <tr><td>Regular</td><td class="num">80.00</td><td class="num">$1,320.00</td><td class="num">$11,022.00</td></tr>
+            <tr><td>Accrued PTO payout</td><td class="num">16.00</td><td class="num">$264.00</td><td class="num">$264.00</td></tr>
+            <tr class="tot"><td>Gross pay</td><td class="num"></td><td class="num">$1,584.00</td><td class="num">$11,286.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col">
+        <table>
+          <thead><tr><th>Taxes &amp; deductions</th><th class="num">This period</th><th class="num">YTD</th></tr></thead>
+          <tbody>
+            <tr><td>Federal income tax</td><td class="num">$130.00</td><td class="num">$902.00</td></tr>
+            <tr><td>Social Security</td><td class="num">$98.21</td><td class="num">$699.73</td></tr>
+            <tr><td>Medicare</td><td class="num">$22.97</td><td class="num">$163.65</td></tr>
+            <tr><td>MD state income tax</td><td class="num">$63.36</td><td class="num">$451.44</td></tr>
+            <tr><td>Baltimore local tax</td><td class="num">$50.69</td><td class="num">$361.15</td></tr>
+            <tr class="tot"><td>Total deductions</td><td class="num">$365.23</td><td class="num">$2,577.97</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="card"><div class="lbl">Gross this period</div><div class="amt">$1,584.00</div></div>
+      <div class="card"><div class="lbl">Total deductions</div><div class="amt">−$365.23</div></div>
+      <div class="card hl"><div class="lbl">Net pay this period</div><div class="amt">$1,218.77</div></div>
+    </div>
+
+    <div class="ongoing">
+      <div class="hd">Going-forward income</div>
+      <div class="row">
+        <span>Ongoing monthly earned income after this final paycheck</span>
+        <span class="v">$0.00</span>
+      </div>
+    </div>
+
+    <div class="foot">
+      This earnings statement reflects the employee's final pay. Employment ended May 22, 2026; the
+      employee has no scheduled hours and no ongoing earned income from Acme Retail LLC. Year-to-date
+      figures cover Jan 1 – May 22, 2026. SAMPLE — DEMONSTRATION ONLY · fictional employer, fabricated
+      figures.
+    </div>
+  </div>
+</body>
+</html>

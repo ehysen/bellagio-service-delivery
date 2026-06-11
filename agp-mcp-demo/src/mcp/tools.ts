@@ -6,6 +6,7 @@
  *   Step 3 Authorization → create_authorization
  *   Step 4/5 Request     → submit_service_request, get_status
  *   Document feature     → submit_verification_document, list_document_types
+ *   Outcome artifacts    → issue_certificate_of_eligibility, confirm_benefit_disbursement
  *   One-shot             → simulate_application (runs the whole dummy flow in chat)
  *
  * Every tool returns JSON text. Tools are thin adapters over @/agp/* — the same
@@ -28,6 +29,8 @@ import {
   buildServiceRequest,
   buildReceipt,
   refreshReceipt,
+  buildCertificate,
+  buildDisbursement,
 } from "@/agp/builders";
 import {
   putAuthorization,
@@ -37,10 +40,12 @@ import {
   getReceiptHousehold,
   setReceiptHousehold,
   getDocument,
+  putCertificate,
+  putDisbursement,
 } from "@/agp/store";
 import { extractDocument, factForDocument, type ExtractedFact } from "@/agp/extractor";
 import { applyFacts } from "@/agp/verification";
-import type { DocumentType } from "@/agp/types";
+import type { DocumentType, CertificateOfEligibility, DisbursementConfirmation } from "@/agp/types";
 
 function json(obj: unknown) {
   return { content: [{ type: "text" as const, text: JSON.stringify(obj, null, 2) }] };
@@ -305,6 +310,70 @@ export function registerTools(server: McpServer): void {
     },
   );
 
+  // ── Outcome artifacts (issued once a case is APPROVED) ────────────────────
+  server.registerTool(
+    "issue_certificate_of_eligibility",
+    {
+      title: "Issue Certificate of Eligibility (demo determination notice)",
+      description:
+        "For an APPROVED case, issue the formal determination notice as a Certificate of Eligibility: " +
+        "program, applicant, household size, approved monthly benefit, effective date, 12-month " +
+        "certification period (recertify-by date), the legal basis (policy citations), the issuing " +
+        "agency, and an openable document URL the user can click. Present the whole thing to the user. " +
+        "Clearly DEMONSTRATION ONLY — no legal effect. Pass the receiptId from submit_service_request " +
+        "(optionally a constituentName). If the case isn't approved yet, this returns what's still needed.",
+      inputSchema: {
+        receiptId: z.string().describe("An approved receiptId from submit_service_request."),
+        constituentName: z.string().optional().describe("Name to print on the certificate (optional)."),
+      },
+    },
+    async ({ receiptId, constituentName }) => {
+      const receipt = getReceipt(receiptId);
+      if (!receipt) return err(`Unknown receiptId '${receiptId}'.`);
+      if (receipt.status !== "approved") {
+        return json({
+          issued: false,
+          status: receipt.status,
+          reason:
+            `A certificate is issued only for an APPROVED case (current status: ${receipt.status}). ` +
+            `Resolve the remaining material fact(s) — ${receipt.correctionPath.requiredFacts.join(", ") || "none"} — ` +
+            "with submit_verification_document, then try again.",
+        });
+      }
+      const certificate = buildCertificate({ receipt, constituentName, now: now() });
+      putCertificate(certificate);
+      return json({ issued: true, certificate });
+    },
+  );
+
+  server.registerTool(
+    "confirm_benefit_disbursement",
+    {
+      title: "Confirm benefit disbursement (demo payment confirmation)",
+      description:
+        "For an APPROVED case, return the benefit-issuance confirmation: a confirmation number, the " +
+        "amount, the EBT card the SNAP benefit loads to (SNAP pays to an EBT card, not a bank account — " +
+        "say this plainly), the first issuance date, the monthly recurring schedule, and the next " +
+        "issuance date. Present it as the 'your money is on the way' confirmation. DEMONSTRATION ONLY — " +
+        "no funds move and no card is issued. Pass the receiptId.",
+      inputSchema: { receiptId: z.string().describe("An approved receiptId.") },
+    },
+    async ({ receiptId }) => {
+      const receipt = getReceipt(receiptId);
+      if (!receipt) return err(`Unknown receiptId '${receiptId}'.`);
+      if (receipt.status !== "approved") {
+        return json({
+          confirmed: false,
+          status: receipt.status,
+          reason: `Disbursement is confirmed only for an APPROVED case (current status: ${receipt.status}).`,
+        });
+      }
+      const disbursement = buildDisbursement({ receipt, now: now() });
+      putDisbursement(disbursement);
+      return json({ confirmed: true, disbursement });
+    },
+  );
+
   // ── One-shot: run the whole dummy application end-to-end ──────────────────
   server.registerTool(
     "simulate_application",
@@ -312,12 +381,14 @@ export function registerTools(server: McpServer): void {
       title: "Simulate a full SNAP application (one call, end-to-end)",
       description:
         "Run the ENTIRE AGP dummy flow in a single call and return a step-by-step transcript plus the " +
-        "final determination and receipt — no website, no further input needed. It discovers the service, " +
-        "fetches the eligibility rule, assesses (pending under §408), creates an authorization, submits the " +
-        "service request (provisional receipt), then verifies each document and re-runs the engine until the " +
-        "case resolves. Use this to walk the user through the whole journey at once, narrating each step. " +
-        "Omit `household` for the built-in 'Maria, household of 3, job loss' demo; `documents` defaults to a " +
-        "termination letter + bank statement, which resolve the case to 'approved'.",
+        "final determination, receipt, Certificate of Eligibility, and benefit-disbursement confirmation " +
+        "— no website, no further input needed. It discovers the service, fetches the eligibility rule, " +
+        "assesses (pending under §408), creates an authorization, submits the service request (provisional " +
+        "receipt), verifies each document and re-runs the engine until the case resolves, then — once " +
+        "approved — issues the certificate (with an openable URL) and confirms the EBT disbursement. Use " +
+        "this to walk the user through the whole journey at once, narrating each step. Everything is " +
+        "DEMONSTRATION ONLY. Omit `household` for the built-in 'Maria, household of 3, job loss' demo; " +
+        "`documents` defaults to a termination letter + bank statement, which resolve the case to approved.",
       inputSchema: {
         household: householdSchema.optional().describe("Omit to use the built-in demo household."),
         documents: z
@@ -387,11 +458,35 @@ export function registerTools(server: McpServer): void {
         });
       }
 
+      // Once approved, issue the outcome artifacts: certificate + disbursement.
+      let certificate: CertificateOfEligibility | undefined;
+      let disbursement: DisbursementConfirmation | undefined;
+      if (receipt.status === "approved") {
+        certificate = buildCertificate({ receipt, now: now() });
+        putCertificate(certificate);
+        steps.push({
+          step: "7. certificate",
+          summary: `Issued Certificate of Eligibility ${certificate.certificateId} (view: ${certificate.viewUrl}).`,
+          object: { certificateId: certificate.certificateId, viewUrl: certificate.viewUrl },
+        });
+        disbursement = buildDisbursement({ receipt, now: now() });
+        putDisbursement(disbursement);
+        steps.push({
+          step: "8. disbursement",
+          summary: `Confirmed $${disbursement.amount}/mo to the EBT card (conf. ${disbursement.confirmationId}); first issuance ${disbursement.firstIssuanceDate}, then monthly.`,
+          object: { confirmationId: disbursement.confirmationId, amount: disbursement.amount, firstIssuanceDate: disbursement.firstIssuanceDate },
+        });
+      }
+
       return json({
         steps,
         finalDecision: receipt.decisionSnapshot.decision,
         finalBenefit: receipt.decisionSnapshot.monthlyBenefit,
         receipt,
+        certificate,
+        disbursement,
+        disclaimer:
+          "DEMONSTRATION ONLY — simulated determination; not an official Maryland DHS decision and no funds move.",
       });
     },
   );
